@@ -30,12 +30,11 @@ class player(stats):
         stats.__init__(self, hp, atk, defe, spd)
         self.xVel = 0
         self.yVel = 0
-        self.width = 32
-        self.height = 32
+        self.width = 64
+        self.height = 64
         self.noSprites = 36
         self.spriteScale = 2 
         self.currentFrame = 0
-        self.currentSprite = self.downIdleList[0]
         self.lastUpdated = 0
         self.state = "idle"
         self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
@@ -48,21 +47,21 @@ class player(stats):
         self.animate()    
             
     def loadSprites(self):
-        self.rightIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard6.png')),
-                              pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard7.png'))]
-        self.downIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard1.png')),
-                             pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard2.png'))]
-        self.upIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard11.png')),
-                           pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard12.png'))]
-        self.rightList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard8.png')),
-                          pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard9.png')),
-                          pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard10.png'))]
-        self.downList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard3.png')),
-                         pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard4.png')),
-                         pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard5.png'))]
-        self.upList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard13.png')),
-                       pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard14.png')),
-                       pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard15.png'))]
+        self.rightIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard05.png')),
+                              pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard06.png'))]
+        self.downIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard00.png')),
+                             pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard01.png'))]
+        self.upIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard10.png')),
+                           pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard11.png'))]
+        self.rightList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard07.png')),
+                          pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard08.png')),
+                          pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard09.png'))]
+        self.downList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard02.png')),
+                         pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard03.png')),
+                         pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard04.png'))]
+        self.upList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard12.png')),
+                       pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard13.png')),
+                       pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard14.png'))]
         
     def movement(self, playerH):
         self.xVel = 0
@@ -79,7 +78,7 @@ class player(stats):
         playerH.y += self.yVel
         
     def draw(self, playerH, window):    
-        window.blit(self.currentSprite, (playerH.x, playerH.y))
+        window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), (playerH.x, playerH.y))
         
     def setState(self):
         self.state = "idle"
@@ -90,10 +89,11 @@ class player(stats):
         if self.yVel > 0:
             self.state = "down"  
         if self.yVel < 0:
-            self.state = "up"     
-            
+            self.state = "up"    
+
     def animate(self): 
-        currentTime = pygame.time.get_ticks()       
+        currentTime = pygame.time.get_ticks()  
+        self.currentSprite = self.downIdleList[0]     
         if self.state == "idle":
             if currentTime - self.lastUpdated > 200:
                 self.lastUpdated = currentTime
@@ -120,14 +120,35 @@ class player(stats):
                     self.currentSprite = self.upList[self.currentFrame]
 
 class playerProjectile:
-    def __init__(self, projRange, projLife, projDmg, projShots, projEff, width, height):
-     self.projRange = projRange
-     self.projLife = projLife
-     self.projDmg = projDmg
-     self.projShots = projShots
-     self.projEff = projEff
-     self.width = width
-     self.height = height
+    def __init__(self, projRange, projLife, projDmg, projShots, projEff):
+        self.projRange = projRange
+        self.projLife = projLife
+        self.projDmg = projDmg
+        self.projShots = projShots
+        self.projEff = projEff
+        self.projList = [] 
+        self.projSpd = 5
+        self.projSize = 7
+        
+    def update(self):
+        for item in self.projList:
+            item[0] += item[2]
+            item[1] += item[3]
+    
+    def math(self, playerH):
+            mouseX, mouseY = pygame.mouse.get_pos()
+            distanceX = mouseX - playerH.x
+            distanceY = mouseY - playerH.y
+            angle = math.atan2(distanceY, distanceX)
+            projVelX = self.projSpd * math.cos(angle)
+            projVelY = self.projSpd * math.sin(angle)
+            self.projList.append([playerH.x, playerH.y, projVelX, projVelY])
+    
+    def draw(self, colour, window):
+        for posX, posY, projVelX, projVelY in self.projList:
+            posX = int(posX)
+            posY = int(posY)
+            pygame.draw.circle(window, colour, (posX, posY), self.projSize)
                        
 class enemy(stats):
     def __init__(self, hp, atk, defe, spd):
@@ -139,14 +160,21 @@ class enemyProjectile:
      self.projLife = projLife
      self.projDmg = projDmg
      self.projShots = projShots
-     self.projEff = projEff     
+     self.projEff = projEff    
     
-def gameScreen(p, playerH, colour, window): 
-        window.fill(colour)
+def gameScreen(p, pProj, playerH, window): 
+        colour = {"white" : (255, 255, 255)
+                  , "black" : (0, 0, 0)
+                  , "red" : (255, 0, 0)
+                  , "green" : (0, 255, 0)
+                  , "blue" : (0, 0, 255)}
+
+        window.fill(colour["white"])
         p.draw(playerH, window)
+        pProj.draw(colour["red"], window)
         pygame.display.update()  
 
-def main(p, colour, window):
+def main(p, pProj, window):
     playerH = pygame.Rect(500, 250, p.width, p.height)
     clock = pygame.time.Clock()
     run = True
@@ -173,21 +201,25 @@ def main(p, colour, window):
                     p.down, p.faceRight, p.faceUp, p.faceLeft = False, False, False, False
                 if event.type == pygame.K_w:
                     p.up, p.faceRight, p.faceLeft, p.faceDown = False, False, False, False
-                    
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pProj.math(playerH)
+            
+        pProj.update()   
         p.update(playerH)
-        gameScreen(p, playerH, colour, window)
+        gameScreen(p, pProj, playerH, window)
     pygame.quit()
     
 width, height = 1000, 500
 window = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Mystic Maze")
 
-colour = {"white" : (255, 255, 255), "black" : (0, 0, 0), "red" : (255, 0, 0), "green" : (0, 255, 0), "blue" : (0, 0, 255)}
 playerStats = {"hp" : 100, "atk" : 1, "def" : 1, "spd" : 1}
+
 
 fps = 60 
 
 p = player(playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
+pProj = playerProjectile(1, 1, 1, 1, 1)
     
 if __name__ == "__main__":
-    main(p, colour["white"], window)
+    main(p, pProj, window)
