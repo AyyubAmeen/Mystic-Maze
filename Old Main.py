@@ -47,7 +47,7 @@ def main(p):
         
     pygame.quit()
     
-width, height = 1000, 500
+width, height = 1000, 500 
 window = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Mystic Maze")
 

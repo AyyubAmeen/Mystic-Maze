@@ -28,8 +28,9 @@ class map:
 class player(stats):
     def __init__(self, hp, atk, defe, spd):
         stats.__init__(self, hp, atk, defe, spd)
-        self.xVel = 0
-        self.yVel = 0
+        self.velX = 0
+        self.velY = 0
+        self.vel = 5
         self.width = 64
         self.height = 64
         self.noSprites = 36
@@ -37,16 +38,6 @@ class player(stats):
         self.currentFrame = 0
         self.lastUpdated = 0
         self.state = "idle"
-        self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
-        self.left, self.right, self.up, self.down = False, False, False, False
-        
-    def update(self, playerH):
-        self.movement(playerH)
-        self.setState()
-        self.loadSprites()
-        self.animate()    
-            
-    def loadSprites(self):
         self.rightIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard05.png')),
                               pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard06.png'))]
         self.downIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard00.png')),
@@ -62,38 +53,45 @@ class player(stats):
         self.upList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard12.png')),
                        pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard13.png')),
                        pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard14.png'))]
+        self.currentSprite = self.downIdleList[0] 
+        self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
+        self.left, self.right, self.up, self.down = False, False, False, False
         
-    def movement(self, playerH):
-        self.xVel = 0
-        self.yVel = 0
-        if self.left == True:
-            self.xVel = -1 * self.spd
-        if self.right == True:
-            self.xVel = 1 * self.spd
-        if self.down == True:
-            self.yVel = 1 * self.spd
-        if self.up == True:
-            self.yVel = -1 * self.spd
-        playerH.x += self.xVel
-        playerH.y += self.yVel
+    def update(self, playerRect, keysPressed):
+        self.setState()
+        self.movement(playerRect, keysPressed)
+        self.animate()    
         
-    def draw(self, playerH, window):    
-        window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), (playerH.x, playerH.y))
+    def movement(self, playerRect, keysPressed):
+        self.velX = 0
+        self.velY = 0
+        if keysPressed[pygame.K_a]:
+            self.velX += -self.vel * self.spd
+        if keysPressed[pygame.K_d]:
+            self.velX += self.vel * self.spd
+        if keysPressed[pygame.K_s]:
+            self.velY += self.vel * self.spd
+        if keysPressed[pygame.K_w]:
+            self.velY += -self.vel * self.spd
+        playerRect.x += self.velX
+        playerRect.y += self.velY
+        
+    def draw(self, playerRect, window):    
+        window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), (playerRect.x, playerRect.y))
         
     def setState(self):
         self.state = "idle"
-        if self.xVel < 0:
+        if self.velX < 0:
             self.state = "left"           
-        if self.xVel > 0:
+        elif self.velX > 0:
             self.state = "right"  
-        if self.yVel > 0:
+        if self.velY > 0:
             self.state = "down"  
-        if self.yVel < 0:
+        if self.velY < 0:
             self.state = "up"    
 
     def animate(self): 
-        currentTime = pygame.time.get_ticks()  
-        self.currentSprite = self.downIdleList[0]     
+        currentTime = pygame.time.get_ticks()      
         if self.state == "idle":
             if currentTime - self.lastUpdated > 200:
                 self.lastUpdated = currentTime
@@ -111,7 +109,7 @@ class player(stats):
                 self.lastUpdated = currentTime
                 self.currentFrame = (self.currentFrame + 1) % len(self.downList)
                 if self.state == "left":
-                    self.currentSprite = pygame.transform.flip(self.rightList[self.currentFrame])
+                    self.currentSprite = pygame.transform.flip(self.rightList[self.currentFrame], True, False)
                 if self.state == "right":
                     self.currentSprite = self.rightList[self.currentFrame]
                 if self.state == "down":
@@ -120,29 +118,30 @@ class player(stats):
                     self.currentSprite = self.upList[self.currentFrame]
 
 class playerProjectile:
-    def __init__(self, projRange, projLife, projDmg, projShots, projEff):
+    def __init__(self, projRange, projLife, projDmg, projShots):
         self.projRange = projRange
         self.projLife = projLife
         self.projDmg = projDmg
-        self.projShots = projShots
-        self.projEff = projEff
-        self.projList = [] 
+        self.projShots = projShots 
         self.projSpd = 5
         self.projSize = 7
+        self.projList = []
         
     def update(self):
         for item in self.projList:
             item[0] += item[2]
             item[1] += item[3]
     
-    def math(self, playerH):
+    def math(self, p , playerRect):
             mouseX, mouseY = pygame.mouse.get_pos()
-            distanceX = mouseX - playerH.x
-            distanceY = mouseY - playerH.y
+            distanceX = mouseX - playerRect.x
+            distanceY = mouseY - playerRect.y
             angle = math.atan2(distanceY, distanceX)
             projVelX = self.projSpd * math.cos(angle)
             projVelY = self.projSpd * math.sin(angle)
-            self.projList.append([playerH.x, playerH.y, projVelX, projVelY])
+            spawnPointX = playerRect.x + (p.width/2)
+            spawnPointY = playerRect.y + (p.height/2) 
+            self.projList.append([spawnPointX, spawnPointY, projVelX, projVelY])
     
     def draw(self, colour, window):
         for posX, posY, projVelX, projVelY in self.projList:
@@ -160,9 +159,8 @@ class enemyProjectile:
      self.projLife = projLife
      self.projDmg = projDmg
      self.projShots = projShots
-     self.projEff = projEff    
-    
-def gameScreen(p, pProj, playerH, window): 
+     
+def gameScreen(p, pProj, playerRect, window): 
         colour = {"white" : (255, 255, 255)
                   , "black" : (0, 0, 0)
                   , "red" : (255, 0, 0)
@@ -170,12 +168,16 @@ def gameScreen(p, pProj, playerH, window):
                   , "blue" : (0, 0, 255)}
 
         window.fill(colour["white"])
-        p.draw(playerH, window)
         pProj.draw(colour["red"], window)
+        p.draw(playerRect, window)
         pygame.display.update()  
 
-def main(p, pProj, window):
-    playerH = pygame.Rect(500, 250, p.width, p.height)
+def main(p, pProj):
+    width, height = 1000, 500
+    window = pygame.display.set_mode((width, height))
+    pygame.display.set_caption("Mystic Maze")
+
+    playerRect = pygame.Rect(500, 250, p.width, p.height)
     clock = pygame.time.Clock()
     run = True
     while run:
@@ -202,24 +204,21 @@ def main(p, pProj, window):
                 if event.type == pygame.K_w:
                     p.up, p.faceRight, p.faceLeft, p.faceDown = False, False, False, False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pProj.math(playerH)
-            
+                pProj.math(p, playerRect)
+        
+        keysPressed = pygame.key.get_pressed()
         pProj.update()   
-        p.update(playerH)
-        gameScreen(p, pProj, playerH, window)
+        p.update(playerRect, keysPressed)
+        gameScreen(p, pProj, playerRect, window)
     pygame.quit()
-    
-width, height = 1000, 500
-window = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Mystic Maze")
 
 playerStats = {"hp" : 100, "atk" : 1, "def" : 1, "spd" : 1}
-
+basicWandStats = {""}
 
 fps = 60 
 
 p = player(playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
-pProj = playerProjectile(1, 1, 1, 1, 1)
+pProj = playerProjectile(1, 1, 1, 1)
     
 if __name__ == "__main__":
-    main(p, pProj, window)
+    main(p, pProj)
