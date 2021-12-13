@@ -136,8 +136,8 @@ class playerProjectile:
             distanceX = mouseX - playerRect.x
             distanceY = mouseY - playerRect.y
             angle = math.atan2(distanceY, distanceX)
-            projVelX = self.projSpd * math.cos(angle)
-            projVelY = self.projSpd * math.sin(angle)
+            projVelX = self.spd * math.cos(angle)
+            projVelY = self.spd * math.sin(angle)
             spawnPointX = playerRect.x + (p.width/2)
             spawnPointY = playerRect.y + (p.height/2) 
             self.projList.append([spawnPointX, spawnPointY, projVelX, projVelY])
@@ -146,9 +146,8 @@ class playerProjectile:
         for posX, posY, projVelX, projVelY in self.projList:
             posX = int(posX)
             posY = int(posY)
-            pygame.draw.circle(window, colour["yellow"], (posX, posY), (self.projSize * (5/3)))
-            pygame.draw.circle(window, colour["orange"], (posX, posY), (self.projSize * (4/3)))
-            pygame.draw.circle(window, colour["red"], (posX, posY), self.projSize)
+            pygame.draw.circle(window, colour["orange"], (posX, posY), (self.size * (5/3)))
+            pygame.draw.circle(window, colour["red"], (posX, posY), self.size)
                        
 class enemy(stats):
     def __init__(self, hp, atk, defe, spd):
