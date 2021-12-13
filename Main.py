@@ -11,12 +11,12 @@ class stats:
         
 class map:
     def __init__(self):
-        self.floorWidth = 5
-        self.floorHeight = 5
-        self.floorNum = 0
+        self.width = 5
+        self.height = 5
+        self.numFloor = 1
         self.floor2D = []
         self.floor1D = []  
-        self.roomCont = []
+        self.roomContainer = []
         
     def generate(self):
         self.floorList()
@@ -118,10 +118,10 @@ class player(stats):
                     self.currentSprite = self.upList[self.currentFrame]
 
 class playerProjectile:
-    def __init__(self, projLife, baseDmg, noShots, spd, size):
+    def __init__(self, projLife, baseDmg, numShots, spd, size):
         self.projLife = projLife
         self.baseDmg = baseDmg
-        self.noShots = noShots 
+        self.numShots = numShots 
         self.spd = spd
         self.size = size
         self.projList = []
@@ -199,7 +199,6 @@ def main(p, pProj, colour):
                     p.up, p.faceRight, p.faceLeft, p.faceDown = False, False, False, False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pProj.math(p, playerRect)
-        
         keysPressed = pygame.key.get_pressed()
         pProj.update()   
         p.update(playerRect, keysPressed)
@@ -207,13 +206,13 @@ def main(p, pProj, colour):
     pygame.quit()
 
 playerStats = {"hp" : 100, "atk" : 1, "def" : 1, "spd" : 1}
-basicWand = {"projLife" : 10 , "baseDmg" : 1, "noShots" : 1, "spd" : 7.5, "size" : 5}
+basicWand = {"projLife" : 10 , "baseDmg" : 1, "numShots" : 1, "spd" : 7.5, "size" : 5}
 colour = {"white" : (255, 255, 255), "black" : (0, 0, 0), "red" : (255, 0, 0), "green" : (0, 255, 0), "blue" : (0, 0, 255), "yellow" : (255, 255, 0), "orange" : (255, 102, 0), "purple" : (102, 0, 102) }
 
 fps = 60 
 
 p = player(playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
-pProj = playerProjectile(basicWand["projLife"], basicWand["baseDmg"], basicWand["noShots"], basicWand["spd"], basicWand["size"])
+pProj = playerProjectile(basicWand["projLife"], basicWand["baseDmg"], basicWand["numShots"], basicWand["spd"], basicWand["size"])
     
 if __name__ == "__main__":
     main(p, pProj, colour)
