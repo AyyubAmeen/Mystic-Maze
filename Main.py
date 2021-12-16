@@ -2,13 +2,35 @@ import pygame
 import math
 import os
 
-class stats:
-    def __init__(self, hp, atk, defe, spd):
-        self.hp = hp
-        self.atk = atk
-        self.defe = defe
-        self.spd = spd
-        
+class mysticMaze:
+    def __init__(self):
+        return
+
+    def normalise(self):
+        return
+
+    def pointCollision(self):
+        return
+
+    def rectangleCollsion(self):
+        return
+
+class gameUI:
+    def __init__(self):
+        self.healthX
+        self.healthY
+        self.healthWidth
+
+    def healthbarAlgo(self, p):
+        return
+
+    def healthbarDraw(self, colour):
+        return
+
+class items:
+    def __init__(self, type):
+        self.type = type
+
 class map:
     def __init__(self):
         self.width = 5
@@ -25,6 +47,14 @@ class map:
         self.floor1D = [0 for x in range(self.floorWidth)]
         for i in range(self.floorHeight):
             self.floor2D.append(self.floor1D)   
+
+class stats:
+    def __init__(self, hp, atk, defe, spd):
+        self.hp = hp
+        self.atk = atk
+        self.defe = defe
+        self.spd = spd
+
 
 class player(stats):
     def __init__(self, hp, atk, defe, spd):
@@ -171,42 +201,60 @@ def main(p, pProj, colour):
     window = pygame.display.set_mode((width, height))
     pygame.display.set_caption("Mystic Maze")
     playerRect = pygame.Rect(500, 250, p.width, p.height)
+    state = "game"
     clock = pygame.time.Clock()
     run = True
     while run:
         clock.tick(fps)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            if event.type == pygame.KEYDOWN:
-                if event.type == pygame.K_a:
-                    p.left, p.faceLeft = True, True
-                if event.type == pygame.K_d:
-                    p.right, p.faceRight = True, True
-                if event.type == pygame.K_s:
-                    p.down, p.faceDown = True, True
-                if event.type == pygame.K_w:
-                    p.up, p.faceUp = True, True
-            if event.type == pygame.KEYUP:
-                if event.type == pygame.K_a:
-                    p.left, p.faceRight, p.faceUp, p.faceDown = False, False, False, False
-                if event.type == pygame.K_d:
-                    p.right, p.faceLeft, p.faceUp, p.faceDown = False, False, False, False
-                if event.type == pygame.K_s:
-                    p.down, p.faceRight, p.faceUp, p.faceLeft = False, False, False, False
-                if event.type == pygame.K_w:
-                    p.up, p.faceRight, p.faceLeft, p.faceDown = False, False, False, False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pProj.math(p, playerRect)
-        keysPressed = pygame.key.get_pressed()
-        pProj.update()   
-        p.update(playerRect, keysPressed)
-        gameScreen(p, pProj, playerRect, window, colour)
+        if state == "game":
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.KEYDOWN:
+                    if event.type == pygame.K_a:
+                        p.left, p.faceLeft = True, True
+                    if event.type == pygame.K_d:
+                        p.right, p.faceRight = True, True
+                    if event.type == pygame.K_s:
+                        p.down, p.faceDown = True, True
+                    if event.type == pygame.K_w:
+                        p.up, p.faceUp = True, True
+                if event.type == pygame.KEYUP:
+                    if event.type == pygame.K_a:
+                        p.left, p.faceRight, p.faceUp, p.faceDown = False, False, False, False
+                    if event.type == pygame.K_d:
+                        p.right, p.faceLeft, p.faceUp, p.faceDown = False, False, False, False
+                    if event.type == pygame.K_s:
+                        p.down, p.faceRight, p.faceUp, p.faceLeft = False, False, False, False
+                    if event.type == pygame.K_w:
+                        p.up, p.faceRight, p.faceLeft, p.faceDown = False, False, False, False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pProj.math(p, playerRect)
+            keysPressed = pygame.key.get_pressed()
+            pProj.update()   
+            p.update(playerRect, keysPressed)
+            gameScreen(p, pProj, playerRect, window, colour)
     pygame.quit()
 
-playerStats = {"hp" : 100, "atk" : 1, "def" : 1, "spd" : 1}
-basicWand = {"projLife" : 10 , "baseDmg" : 1, "numShots" : 1, "spd" : 7.5, "size" : 5}
-colour = {"white" : (255, 255, 255), "black" : (0, 0, 0), "red" : (255, 0, 0), "green" : (0, 255, 0), "blue" : (0, 0, 255), "yellow" : (255, 255, 0), "orange" : (255, 102, 0), "purple" : (102, 0, 102) }
+playerStats = {"hp" : 100,
+               "atk" : 1,
+               "def" : 1,
+               "spd" : 1}
+
+basicWand = {"projLife" : 10,
+             "baseDmg" : 1,
+             "numShots" : 1,
+             "spd" : 7.5,
+             "size" : 5}
+
+colour = {"white" : (255, 255, 255),
+         "black" : (0, 0, 0),
+         "red" : (255, 0, 0),
+         "green" : (0, 255, 0),
+         "blue" : (0, 0, 255),
+         "yellow" : (255, 255, 0),
+         "orange" : (255, 102, 0),
+         "purple" : (102, 0, 102) }
 
 fps = 60 
 
