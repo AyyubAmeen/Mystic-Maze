@@ -4,28 +4,44 @@ import os
 
 class mysticMaze:
     def __init__(self):
-        return
-
-    def normalise(self):
-        return
-
-    def pointCollision(self):
-        return
-
-    def rectangleCollsion(self):
-        return
+        self.fps = 60
+        self.width = 1280
+        self.height = 720
 
 class gameUI:
     def __init__(self):
-        self.healthX
-        self.healthY
-        self.healthWidth
+        self.healthSize = 5
+        self.healthX = 15
+        self.healthY = 15
+        self.healthHeight = 25
+        self.itemBoxesX = 750
+        self.itemBoxesY = 450
+        self.itemBoxesWidth = 25
+        self.itemBoxesHeight = 25
 
-    def healthbarAlgo(self, p):
-        return
+    def healthbarUpdate(self, playerObj):
+        self.healthWidth = (100 * (playerObj.currentHp / playerObj.hp)) * self.healthSize
+        self.healthBackWidth = 100 * self.healthSize
 
-    def healthbarDraw(self, colour):
-        return
+        self.healthRect = pygame.Rect(self.healthX, self.healthY, self.healthWidth, self.healthHeight)
+        self.healthBackRect = pygame.Rect(self.healthX, self.healthY, self.healthBackWidth, self.healthHeight)
+
+    def healthbarDraw(self, window, colour):
+        pygame.draw.rect(window, colour["black"], self.healthBackRect)
+        pygame.draw.rect(window, colour["red"], self.healthRect)        
+
+    def itemBoxesDraw(self, window, colour):
+        for i in range(5):
+            self.itemBoxesX += i * 10
+            self.itemBoxesRect = pygame.Rect(self.itemBoxesX, self.itemBoxesY, self.itemBoxesWidth, self.itemBoxesHeight)
+            pygame.draw.rect(window, colour["brown"], self.itemBoxesRect)
+    
+    def update(self, playerObj):
+        self.healthbarUpdate(playerObj)
+
+    def draw(self, window, colour):
+        self.itemBoxesDraw(window, colour)
+        self.healthbarDraw(window, colour)
 
 class items:
     def __init__(self, type):
@@ -48,23 +64,41 @@ class map:
         for i in range(self.floorHeight):
             self.floor2D.append(self.floor1D)   
 
+class room(map):
+    def __init__(self, mysticMazeObj):
+        self.borderSize = 10
+        self.borderX = 50
+        self.borderY = 50
+        self.borderWidth = mysticMazeObj.width - (2 * self.borderX)
+        self.borderHeight = mysticMazeObj.height - (2 * self.borderY)
+
+    def basicRoomDraw(self, window, colour, mysticMazeObj):
+        self.wallsRect = pygame.Rect(0, 0, mysticMazeObj.width, mysticMazeObj.height)
+        pygame.draw.rect(window, colour["brown"], self.wallsRect)
+        self.borderRect = pygame.Rect(self.borderX, self.borderY, self.borderWidth, self.borderHeight)
+        pygame.draw.rect(window, colour["light brown"], self.borderRect)
+
+    def draw(self, window, colour, mysticMazeObj):
+        self.basicRoomDraw(window, colour, mysticMazeObj)
+
 class stats:
     def __init__(self, hp, atk, defe, spd):
         self.hp = hp
+        self.currentHp = hp
         self.atk = atk
         self.defe = defe
         self.spd = spd
-
 
 class player(stats):
     def __init__(self, hp, atk, defe, spd):
         stats.__init__(self, hp, atk, defe, spd)
         self.vel = 5
-        self.width = 64
-        self.height = 64
+        self.width = 100
+        self.height = 100
         self.spriteScale = 2
         self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
         self.left, self.right, self.up, self.down = False, False, False, False
+        self.playerRect = pygame.Rect(500, 250, self.width, self.height)
         self.currentFrame = 0
         self.lastUpdated = 0
         self.state = "idle"
@@ -94,31 +128,26 @@ class player(stats):
 
         self.currentSprite = self.downIdleList[0] 
         
-    def update(self, playerRect, keysPressed):
-        self.movement(playerRect, keysPressed)
-        self.animate()    
-
-    def draw(self, playerRect, window):    
-        window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), (playerRect.x, playerRect.y))
-        
-    def movement(self, playerRect, keysPressed):
+    def movement(self, keysPressed):
         self.velX = 0
         self.velY = 0
         self.state = "idle"
         if keysPressed[pygame.K_a]:
-            self.velX += -self.vel * self.spd
             self.state = "left"           
+            self.velX += -self.vel * self.spd
         if keysPressed[pygame.K_d]:
-            self.velX += self.vel * self.spd
             self.state = "right"  
+            self.velX += self.vel * self.spd
         if keysPressed[pygame.K_s]:
-            self.velY += self.vel * self.spd
             self.state = "down"
+            self.velY += self.vel * self.spd
         if keysPressed[pygame.K_w]:
-            self.velY += -self.vel * self.spd
             self.state = "up"
-        playerRect.x += self.velX
-        playerRect.y += self.velY
+            self.velY += -self.vel * self.spd
+
+       
+        self.playerRect.x += self.velX
+        self.playerRect.y += self.velY
 
     def animate(self): 
         currentTime = pygame.time.get_ticks()      
@@ -126,13 +155,13 @@ class player(stats):
             if currentTime - self.lastUpdated > 200:
                 self.lastUpdated = currentTime
                 self.currentFrame = (self.currentFrame + 1) % len(self.downIdleList)
-                if self.faceRight is True:
+                if self.faceRight == True:
                     self.currentSprite = self.rightIdleList[self.currentFrame]
-                if self.faceRight is True:
+                if self.faceRight == True:
                     self.currentSprite = pygame.transform.flip(self.rightIdleList[self.currentFrame])
-                if self.faceDown is True:
+                if self.faceDown == True:
                     self.currentSprite = self.downIdleList[self.currentFrame]
-                if self.faceUp is True:        
+                if self.faceUp == True:        
                     self.currentSprite = self.upIdleList[self.currentFrame]
         else:
             if currentTime - self.lastUpdated > 100:
@@ -147,6 +176,13 @@ class player(stats):
                 if self.state == "up":
                     self.currentSprite = self.upList[self.currentFrame]
 
+    def update(self, keysPressed):
+        self.movement(keysPressed)
+        self.animate()    
+
+    def draw(self, window):    
+        window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), (self.playerRect.x, self.playerRect.y))
+
 class playerProjectile:
     def __init__(self, projLife, baseDmg, numShots, spd, size):
         self.projLife = projLife
@@ -156,26 +192,33 @@ class playerProjectile:
         self.size = size
         self.projList = []
         
-    def update(self):
-        for item in self.projList:
-            item[0] += item[2]
-            item[1] += item[3]
+    def update(self, roomObj):
+        for index, bullet in enumerate(self.projList):
+            if (bullet[0] + bullet[2]) <= roomObj.borderX or (bullet[0] + bullet[2]) >= (roomObj.borderX + roomObj.borderWidth):
+                self.projList.pop(index)
+            else:
+                bullet[0] += bullet[2]
+
+            if (bullet[1] + bullet[3]) <= roomObj.borderY or (bullet[1] + bullet[3]) >= (roomObj.borderY + roomObj.borderHeight):
+                self.projList.pop(index)
+            else:
+                bullet[1] += bullet[3]
     
-    def math(self, p , playerRect):
+    def math(self, playerObj):
             mouseX, mouseY = pygame.mouse.get_pos()
-            distanceX = mouseX - playerRect.x
-            distanceY = mouseY - playerRect.y
+            distanceX = mouseX - playerObj.playerRect.x
+            distanceY = mouseY - playerObj.playerRect.y
             angle = math.atan2(distanceY, distanceX)
             projVelX = self.spd * math.cos(angle)
             projVelY = self.spd * math.sin(angle)
-            spawnPointX = playerRect.x + (p.width/2)
-            spawnPointY = playerRect.y + (p.height/2) 
-            self.projList.append([spawnPointX, spawnPointY, projVelX, projVelY])
-    
-    def draw(self, colour, window):
-        for posX, posY, projVelX, projVelY in self.projList:
-            posX = int(posX)
-            posY = int(posY)
+            posX = playerObj.playerRect.x + (playerObj.width/2)
+            posY = playerObj.playerRect.y + (playerObj.height/2) 
+            self.projList.append([posX, posY, projVelX, projVelY])
+
+    def draw(self, window, colour):
+        for bullet in self.projList:
+            posX = int(bullet[0])
+            posY = int(bullet[1])
             pygame.draw.circle(window, colour["orange"], (posX, posY), (self.size * (5/3)))
             pygame.draw.circle(window, colour["red"], (posX, posY), self.size)
                        
@@ -184,56 +227,59 @@ class enemy(stats):
         stats.__init__(self, hp, atk, defe, spd)
     
 class enemyProjectile:
-    def __init__(self, projRange, projLife, projDmg, projShots, projEff):
-     self.projRange = projRange
-     self.projLife = projLife
-     self.projDmg = projDmg
-     self.projShots = projShots
+    def __init__(self, projLife, baseDmg, numShots, spd, size):
+        self.projLife = projLife
+        self.baseDmg = baseDmg
+        self.numShots = numShots 
+        self.spd = spd
+        self.size = size
      
-def gameScreen(p, pProj, playerRect, window, colour): 
+def gameScreen(mysticMazeObj, playerObj, playerProjObj, gameUIObj, roomObj, window, colour): 
         window.fill(colour["white"])
-        pProj.draw(colour, window)
-        p.draw(playerRect, window)
+        roomObj.draw(window, colour, mysticMazeObj)
+        playerProjObj.draw(window, colour)
+        playerObj.draw(window)
+        gameUIObj.draw(window, colour)
         pygame.display.update()  
 
-def main(p, pProj, colour):
-    width, height = 1000, 500
-    window = pygame.display.set_mode((width, height))
+def main(mysticMazeObj, playerObj, playerProjObj, roomObj, gameUIObj, colour):
+    window = pygame.display.set_mode((mysticMazeObj.width, mysticMazeObj.height))
     pygame.display.set_caption("Mystic Maze")
-    playerRect = pygame.Rect(500, 250, p.width, p.height)
     state = "game"
     clock = pygame.time.Clock()
     run = True
     while run:
-        clock.tick(fps)
+        clock.tick(mysticMazeObj.fps)
         if state == "game":
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
                 if event.type == pygame.KEYDOWN:
                     if event.type == pygame.K_a:
-                        p.left, p.faceLeft = True, True
+                        playerObj.left, playerObj.faceLeft = True, True
                     if event.type == pygame.K_d:
-                        p.right, p.faceRight = True, True
+                        playerObj.right, playerObj.faceRight = True, True
                     if event.type == pygame.K_s:
-                        p.down, p.faceDown = True, True
+                        playerObj.down, playerObj.faceDown = True, True
                     if event.type == pygame.K_w:
-                        p.up, p.faceUp = True, True
+                        playerObj.up, playerObj.faceUp = True, True
                 if event.type == pygame.KEYUP:
                     if event.type == pygame.K_a:
-                        p.left, p.faceRight, p.faceUp, p.faceDown = False, False, False, False
+                        playerObj.left, playerObj.faceRight, playerObj.faceUp, playerObj.faceDown = False, False, False, False
                     if event.type == pygame.K_d:
-                        p.right, p.faceLeft, p.faceUp, p.faceDown = False, False, False, False
+                        playerObj.right, playerObj.faceLeft, playerObj.faceUp, playerObj.faceDown = False, False, False, False
                     if event.type == pygame.K_s:
-                        p.down, p.faceRight, p.faceUp, p.faceLeft = False, False, False, False
+                        playerObj.down, playerObj.faceRight, playerObj.faceUp, playerObj.faceLeft = False, False, False, False
                     if event.type == pygame.K_w:
-                        p.up, p.faceRight, p.faceLeft, p.faceDown = False, False, False, False
+                        playerObj.up, playerObj.faceRight, playerObj.faceLeft, playerObj.faceDown = False, False, False, False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    pProj.math(p, playerRect)
+                    if event.button == 1:
+                        playerProjObj.math(playerObj)
             keysPressed = pygame.key.get_pressed()
-            pProj.update()   
-            p.update(playerRect, keysPressed)
-            gameScreen(p, pProj, playerRect, window, colour)
+            playerProjObj.update(roomObj)   
+            playerObj.update(keysPressed)
+            gameUIObj.update(playerObj)
+            gameScreen(mysticMazeObj, playerObj, playerProjObj, gameUIObj, roomObj, window, colour)
     pygame.quit()
 
 playerStats = {"hp" : 100,
@@ -249,17 +295,23 @@ basicWand = {"projLife" : 10,
 
 colour = {"white" : (255, 255, 255),
          "black" : (0, 0, 0),
+         "gray" : (128, 128, 128),
+         "brown" : (102, 51, 0),
+         "light brown" : (153, 102, 0),
          "red" : (255, 0, 0),
          "green" : (0, 255, 0),
          "blue" : (0, 0, 255),
          "yellow" : (255, 255, 0),
+         "cream" : (255, 204, 102),
+         "gold" : (204, 153, 0),
          "orange" : (255, 102, 0),
-         "purple" : (102, 0, 102) }
+         "purple" : (102, 0, 102)} 
 
-fps = 60 
+mysticMazeObj = mysticMaze()
+playerObj = player(playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
+playerProjObj = playerProjectile(basicWand["projLife"], basicWand["baseDmg"], basicWand["numShots"], basicWand["spd"], basicWand["size"])
+gameUIObj = gameUI()
+roomObj = room(mysticMazeObj)
 
-p = player(playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
-pProj = playerProjectile(basicWand["projLife"], basicWand["baseDmg"], basicWand["numShots"], basicWand["spd"], basicWand["size"])
-    
 if __name__ == "__main__":
-    main(p, pProj, colour)
+    main(mysticMazeObj, playerObj, playerProjObj, roomObj, gameUIObj, colour)
