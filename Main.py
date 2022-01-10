@@ -90,15 +90,17 @@ class stats:
         self.spd = spd
 
 class player(stats):
-    def __init__(self, hp, atk, defe, spd):
+    def __init__(self, hp, atk, defe, spd, mysticMazeObj):
         stats.__init__(self, hp, atk, defe, spd)
         self.vel = 5
+        self.velX = 0
+        self.velY = 0
         self.width = 100
         self.height = 100
         self.spriteScale = 2
         self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
         self.left, self.right, self.up, self.down = False, False, False, False
-        self.playerRect = pygame.Rect(500, 250, self.width, self.height)
+        self.playerRect = pygame.Rect((mysticMazeObj.width / 2) - (self.width / 2), (mysticMazeObj.height / 2) - self.height / 2, self.width, self.height)
         self.currentFrame = 0
         self.lastUpdated = 0
         self.state = "idle"
@@ -128,7 +130,7 @@ class player(stats):
 
         self.currentSprite = self.downIdleList[0] 
         
-    def movement(self, keysPressed):
+    def movement(self, roomObj, keysPressed):
         self.velX = 0
         self.velY = 0
         self.state = "idle"
@@ -145,9 +147,15 @@ class player(stats):
             self.state = "up"
             self.velY += -self.vel * self.spd
 
-       
-        self.playerRect.x += self.velX
-        self.playerRect.y += self.velY
+        if ((self.playerRect.x + (self.width * 0.2))+ self.velX) <= roomObj.borderX or ((self.playerRect.x + (self.width * 0.8)) + self.velX) >= (roomObj.borderX + roomObj.borderWidth):
+            self.playerRect.x = self.playerRect.x
+        else:
+            self.playerRect.x += self.velX
+        if ((self.playerRect.y + (self.height * 0.2)) + self.velY) <= roomObj.borderY or ((self.playerRect.y + (self.height * 0.8)) + self.velY) >= (roomObj.borderY + roomObj.borderHeight):
+            self.playerRect.y = self.playerRect.y
+        else:
+            self.playerRect.y += self.velY
+
 
     def animate(self): 
         currentTime = pygame.time.get_ticks()      
@@ -164,7 +172,7 @@ class player(stats):
                 if self.faceUp == True:        
                     self.currentSprite = self.upIdleList[self.currentFrame]
         else:
-            if currentTime - self.lastUpdated > 100:
+            if currentTime - self.lastUpdated > 150:
                 self.lastUpdated = currentTime
                 self.currentFrame = (self.currentFrame + 1) % len(self.downList)
                 if self.state == "left":
@@ -176,8 +184,8 @@ class player(stats):
                 if self.state == "up":
                     self.currentSprite = self.upList[self.currentFrame]
 
-    def update(self, keysPressed):
-        self.movement(keysPressed)
+    def update(self, roomObj, keysPressed):
+        self.movement(roomObj, keysPressed)
         self.animate()    
 
     def draw(self, window):    
@@ -191,6 +199,7 @@ class playerProjectile:
         self.spd = spd
         self.size = size
         self.projList = []
+        self.cooldown = 0
         
     def update(self, roomObj):
         for index, bullet in enumerate(self.projList):
@@ -277,7 +286,7 @@ def main(mysticMazeObj, playerObj, playerProjObj, roomObj, gameUIObj, colour):
                         playerProjObj.math(playerObj)
             keysPressed = pygame.key.get_pressed()
             playerProjObj.update(roomObj)   
-            playerObj.update(keysPressed)
+            playerObj.update(roomObj, keysPressed)
             gameUIObj.update(playerObj)
             gameScreen(mysticMazeObj, playerObj, playerProjObj, gameUIObj, roomObj, window, colour)
     pygame.quit()
@@ -308,7 +317,7 @@ colour = {"white" : (255, 255, 255),
          "purple" : (102, 0, 102)} 
 
 mysticMazeObj = mysticMaze()
-playerObj = player(playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
+playerObj = player(playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"], mysticMazeObj)
 playerProjObj = playerProjectile(basicWand["projLife"], basicWand["baseDmg"], basicWand["numShots"], basicWand["spd"], basicWand["size"])
 gameUIObj = gameUI()
 roomObj = room(mysticMazeObj)
