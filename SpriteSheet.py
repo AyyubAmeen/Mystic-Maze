@@ -1,19 +1,12 @@
 import pygame
-import os
+
 
 class spritesheet:
     def __init__ (self,width,height,sheet):
-        self.width = width
-        self.height = height
-        self.sheet = sheet
+        self.sheet = pygame.image.load(sheet).convert
         
-    def getSprites(self, noSprite, scale, colour):
-        spriteList = []
-        sprite = pygame.Surface((self.width, self.height))
-        for i in range(noSprite):
-            sprite.fill(colour)
-            sprite.blit(self.sheet, (0, 0), (i * self.width, 0, self.width, self.height))
-            sprite = pygame.transform.scale(self.sheet, (self.width * scale, self.height * scale))
-            sprite.set_colorkey(colour)
-            spriteList.append(sprite)
-        return spriteList
+    def getSprite(self, x, y, width, height, scale, colour):
+        sprite = pygame.Surface((width, height))
+        sprite.blit(self.sheet, (0, 0), (i * width, 0, width, height))
+        sprite = pygame.transform.scale(self.sheet, (width * scale, height * scale))
+        sprite.set_colorkey(colour)
