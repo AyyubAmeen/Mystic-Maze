@@ -6,7 +6,6 @@ from player import *
 from enemy import *
 from item import *
 from UI import *
-from main import *
 from sprites import *
 from constants import *
 
@@ -33,8 +32,8 @@ class room(map):
         self.borderSize = 10
         self.borderX = 50
         self.borderY = 50
-        self.borderWidth = mysticMazeObj.width - (2 * self.borderX)
-        self.borderHeight = mysticMazeObj.height - (2 * self.borderY)
+        self.borderWidth = self.game.width - (2 * self.borderX)
+        self.borderHeight = self.game.height - (2 * self.borderY)
 
     def drawRoom(self, mysticMazeObj):
         return

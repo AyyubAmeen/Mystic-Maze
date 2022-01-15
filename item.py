@@ -4,7 +4,6 @@ import os
 import sys
 from player import *
 from enemy import *
-from main import *
 from UI import *
 from maps import *
 from sprites import *

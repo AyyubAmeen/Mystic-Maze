@@ -23,12 +23,12 @@ colour = {"white" : (255, 255, 255),
          "orange" : (255, 102, 0),
          "purple" : (102, 0, 102)} 
 
-map1 = [[B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B],
-        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
-        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
-        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],    
-        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
-        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
-        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],  
-        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
-        [B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B]]
+map1 = [["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
+        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
+        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
+        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],    
+        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
+        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
+        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],  
+        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
+        ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"]]

@@ -16,7 +16,6 @@ class game:
         self.fps = 60
         self.width = 1280
         self.height = 720
-        self.font = pygame.font.Font("Arial", 32)
         self.state = "game"
         self.running = True
         self.clock = pygame.time.Clock()
@@ -40,7 +39,7 @@ class game:
                     self.playerObj.down, self.playerObj.faceDown = True, True
                 if event.type == pygame.K_w:
                     self.playerObj.up, self.playerObj.faceUp = True, True
-           if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYUP:
                 if event.type == pygame.K_a:
                     self.playerObj.left, self.playerObj.faceRight, self.playerObj.faceUp, self.playerObj.faceDown = False, False, False, False
                 if event.type == pygame.K_d:
@@ -49,9 +48,9 @@ class game:
                     self.playerObj.down, self.playerObj.faceRight, self.playerObj.faceUp, self.playerObj.faceLeft = False, False, False, False
                 if event.type == pygame.K_w:
                     self.playerObj.up, self.playerObj.faceRight, self.playerObj.faceLeft, self.playerObj.faceDown = False, False, False, False
-           if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    playerProjObj.math(playerObj)
+                    self.spellObj.math(self.playerObj)
 
     def gameUpdate(self):
         self.spellObj.update(self.roomObj)   
@@ -60,10 +59,10 @@ class game:
 
     def gameDraw(self):
         self.window.fill(colour["white"])
-        roomObj.draw(window, colour, mysticMazeObj)
-        playerProjObj.draw(window, colour)
-        playerObj.draw(window)
-        gameUIObj.draw(window, colour)
+        self.roomObj.draw(self.window, colour, self)
+        self.spellObj.draw(self.window, colour)
+        self.playerObj.draw(self.window)
+        self.gameUIObj.draw(self.window, colour)
         pygame.display.update()  
 
     def mainMenuEvent(self):
@@ -86,8 +85,8 @@ class game:
 
     def settingsEvent(self):
         return
+
     def settingsUpdate(self):
-        return
         return
 
     def settingsDraw(self):

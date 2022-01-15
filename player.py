@@ -2,7 +2,6 @@ import pygame
 import math
 import os
 import sys
-from main import *
 from enemy import *
 from item import *
 from UI import *

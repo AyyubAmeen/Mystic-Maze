@@ -7,7 +7,6 @@ from enemy import *
 from item import *
 from UI import *
 from maps import *
-from main import *
 from constants import *
 
 class spritesheet:

@@ -3,7 +3,6 @@ import math
 import os
 import sys
 from player import *
-from main import *
 from item import *
 from UI import *
 from maps import *

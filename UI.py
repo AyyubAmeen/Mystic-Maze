@@ -5,7 +5,6 @@ import sys
 from player import *
 from enemy import *
 from item import *
-from main import *
 from maps import *
 from sprites import *
 from constants import *
