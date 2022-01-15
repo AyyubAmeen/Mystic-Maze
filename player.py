@@ -1,9 +1,16 @@
 import pygame
+import math
 import os
+import sys
 from main import *
-from spritesheet import *
+from enemy import *
+from item import *
+from UI import *
+from maps import *
+from sprites import *
+from constants import *
 
-class player(pygame.sprite.Sprite):
+class player:
     def __init__(self, game, hp, atk, defe, spd):
         self.game = game
         self.hp = hp
@@ -14,13 +21,10 @@ class player(pygame.sprite.Sprite):
         self.baseSpd = 7
         self.velX = 0
         self.velY = 0
+
         self.width = 100
         self.height = 100
         self.spriteScale = 2
-        self.image
-        self.layer = playerLayer
-        self.layerGroup = self.game.sprites
-        pygame.sprite.Sprite.__init__(self, self.layerGroup)
         self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
         self.left, self.right, self.up, self.down = False, False, False, False
         self.playerRect = pygame.Rect((self.game.width / 2) - (self.width / 2), (self.game.height / 2) - self.height / 2, self.width, self.height)
@@ -104,7 +108,7 @@ class player(pygame.sprite.Sprite):
                 self.currentFrame = (self.currentFrame + 1) % len(self.downIdleList)
                 if self.faceRight == True:
                     self.currentSprite = self.rightIdleList[self.currentFrame]
-                if self.faceRight == True:
+                if self.faceLeft == True:
                     self.currentSprite = pygame.transform.flip(self.rightIdleList[self.currentFrame])
                 if self.faceDown == True:
                     self.currentSprite = self.downIdleList[self.currentFrame]

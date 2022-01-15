@@ -1,3 +1,15 @@
+import pygame
+import math
+import os
+import sys
+from player import *
+from enemy import *
+from item import *
+from UI import *
+from main import *
+from sprites import *
+from constants import *
+
 class map:
     def __init__(self):
         self.width = 5
@@ -16,7 +28,8 @@ class map:
             self.floor2D.append(self.floor1D)   
 
 class room(map):
-    def __init__(self, mysticMazeObj):
+    def __init__(self, game):
+        self.game = game
         self.borderSize = 10
         self.borderX = 50
         self.borderY = 50
@@ -24,7 +37,7 @@ class room(map):
         self.borderHeight = mysticMazeObj.height - (2 * self.borderY)
 
     def drawRoom(self, mysticMazeObj):
-        for i, row in enumerate(): 
+        return
         
     def basicRoomDraw(self, window, colour, mysticMazeObj):
         self.wallsRect = pygame.Rect(0, 0, mysticMazeObj.width, mysticMazeObj.height)

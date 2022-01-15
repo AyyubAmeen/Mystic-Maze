@@ -1,5 +1,3 @@
-playerLayer = 1
-
 playerStats = {"hp" : 100,
                "atk" : 1,
                "def" : 1,
@@ -24,3 +22,13 @@ colour = {"white" : (255, 255, 255),
          "gold" : (204, 153, 0),
          "orange" : (255, 102, 0),
          "purple" : (102, 0, 102)} 
+
+map1 = [[B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B],
+        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
+        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
+        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],    
+        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
+        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
+        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],  
+        [B,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,B],
+        [B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B,B]]

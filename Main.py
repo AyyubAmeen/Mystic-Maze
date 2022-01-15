@@ -1,8 +1,14 @@
 import pygame
-from tilemaps import *
-from constants import *
 import math
 import os
+import sys
+from player import *
+from enemy import *
+from item import *
+from UI import *
+from maps import *
+from sprites import *
+from constants import *
 
 class game:
     def __init__(self):
@@ -13,85 +19,95 @@ class game:
         self.font = pygame.font.Font("Arial", 32)
         self.state = "game"
         self.running = True
-
         self.clock = pygame.time.Clock()
 
-    def new(self):
-        self.sprites = pygame.sprite.LayeredUpdates()
-        self.blocks = pygame.sprite.LayeredUpdates()
-        self.enemies = pygame.sprite.LayeredUpdates()
-        self.attacks = pygame.sprite.LayeredUpdates()
+    def objects(self):
+        self.playerObj = player(self, playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
+        self.spellObj = spell(basicSpell["projLife"], basicSpell["baseDmg"], basicSpell["numShots"], basicSpell["spd"], basicSpell["size"])
+        self.gameUIObj = gameUI()
+        self.roomObj = room(self)
 
-        self.player = player(self, playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
-        self.spell = playerProjectile(basicWand["projLife"], basicWand["baseDmg"], basicWand["numShots"], basicWand["spd"], basicWand["size"])
-        self.gameUI = gameUI()
-        self.room = room(self)
-
-    def events(self):
+    def gameEvent(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             if event.type == pygame.KEYDOWN:
                 if event.type == pygame.K_a:
-                    playerObj.left, playerObj.faceLeft = True, True
+                    self.playerObj.left, self.playerObj.faceLeft = True, True
                 if event.type == pygame.K_d:
-                    playerObj.right, playerObj.faceRight = True, True
+                    self.playerObj.right, self.playerObj.faceRight = True, True
                 if event.type == pygame.K_s:
-                    playerObj.down, playerObj.faceDown = True, True
+                    self.playerObj.down, self.playerObj.faceDown = True, True
                 if event.type == pygame.K_w:
-                    playerObj.up, playerObj.faceUp = True, True
+                    self.playerObj.up, self.playerObj.faceUp = True, True
            if event.type == pygame.KEYUP:
                 if event.type == pygame.K_a:
-                    playerObj.left, playerObj.faceRight, playerObj.faceUp, playerObj.faceDown = False, False, False, False
+                    self.playerObj.left, self.playerObj.faceRight, self.playerObj.faceUp, self.playerObj.faceDown = False, False, False, False
                 if event.type == pygame.K_d:
-                    playerObj.right, playerObj.faceLeft, playerObj.faceUp, playerObj.faceDown = False, False, False, False
+                    self.playerObj.right, self.playerObj.faceLeft, self.playerObj.faceUp, self.playerObj.faceDown = False, False, False, False
                 if event.type == pygame.K_s:
-                    playerObj.down, playerObj.faceRight, playerObj.faceUp, playerObj.faceLeft = False, False, False, False
+                    self.playerObj.down, self.playerObj.faceRight, self.playerObj.faceUp, self.playerObj.faceLeft = False, False, False, False
                 if event.type == pygame.K_w:
-                    playerObj.up, playerObj.faceRight, playerObj.faceLeft, playerObj.faceDown = False, False, False, False
+                    self.playerObj.up, self.playerObj.faceRight, self.playerObj.faceLeft, self.playerObj.faceDown = False, False, False, False
            if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     playerProjObj.math(playerObj)
 
-    def update(self):
-        self.sprites.update()
+    def gameUpdate(self):
+        self.spellObj.update(self.roomObj)   
+        self.playerObj.update(self.roomObj, self.keysPressed)
+        self.gameUIObj.update(self.playerObj)
 
-    def draw(self):
-        return
-
-    def main(self):
-        return
-
-    def mainMenu(self):
-        return
-     
-def gameScreen(mysticMazeObj, playerObj, playerProjObj, gameUIObj, roomObj, window, colour): 
-        window.fill(colour["white"])
+    def gameDraw(self):
+        self.window.fill(colour["white"])
         roomObj.draw(window, colour, mysticMazeObj)
         playerProjObj.draw(window, colour)
         playerObj.draw(window)
         gameUIObj.draw(window, colour)
         pygame.display.update()  
 
-def main(game, playerObj, playerProjObj, roomObj, gameUIObj, colour):
-    window = pygame.display.set_mode((mysticMazeObj.width, mysticMazeObj.height))
-    pygame.display.set_caption("Mystic Maze")
-    while mysticMazeObj.running = True:
-        mysticMazeObj.clock.tick(mysticMazeObj.fps)
-        if mysticMazeObj.state == "game":
-            keysPressed = pygame.key.get_pressed()
-            playerProjObj.update(roomObj)   
-            playerObj.update(roomObj, keysPressed)
-            gameUIObj.update(playerObj)
-            gameScreen(mysticMazeObj, playerObj, playerProjObj, gameUIObj, roomObj, window, colour)
-    pygame.quit()
+    def mainMenuEvent(self):
+        return
 
+    def mainMenuUpdate(self):
+        return
 
-game = game()
-playerObj = player(game, playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
-playerProjObj = playerProjectile(basicWand["projLife"], basicWand["baseDmg"], basicWand["numShots"], basicWand["spd"], basicWand["size"])
-gameUIObj = gameUI()
-roomObj = room(game)
+    def mainMenuDraw(self):
+        return
+
+    def pauseMenuEvent(self):
+        return
+
+    def pauseMenuUpdate(self):
+        return
+
+    def pauseMenuDraw(self):
+        return
+
+    def settingsEvent(self):
+        return
+
+    def settingsUpdate(self):
+        return
+
+    def settingsDraw(self):
+        return
+
+    def main(self):
+        self.objects()
+        self.window = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption("Mystic Maze")
+        while self.running:
+            self.clock.tick(self.fps)
+            if self.state == "game":
+                self.gameEvent()
+                self.keysPressed = pygame.key.get_pressed()
+                self.gameUpdate()
+                self.gameDraw()
+        pygame.quit()
+        sys.exit()
+
+g = game()
 
 if __name__ == "__main__":
-    main(game, playerObj, playerProjObj, roomObj, gameUIObj, colour)
+    g.main()

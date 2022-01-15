@@ -1,3 +1,15 @@
+import pygame
+import math
+import os
+import sys
+from player import *
+from enemy import *
+from main import *
+from UI import *
+from maps import *
+from sprites import *
+from constants import *
+
 class spell:
     def __init__(self, projLife, baseDmg, numShots, spd, size):
         self.projLife = projLife
