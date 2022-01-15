@@ -86,8 +86,8 @@ class game:
 
     def settingsEvent(self):
         return
-
     def settingsUpdate(self):
+        return
         return
 
     def settingsDraw(self):
