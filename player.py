@@ -1,17 +1,12 @@
 import pygame
 import math
 import os
-import sys
-from enemy import *
-from item import *
-from UI import *
-from maps import *
-from sprites import *
-from constants import *
 
 class player:
-    def __init__(self, game, hp, atk, defe, spd):
+    def __init__(self, game, room, hp, atk, defe, spd):
         self.game = game
+        self.room = room
+
         self.hp = hp
         self.currentHp = hp
         self.atk = atk
@@ -21,15 +16,19 @@ class player:
         self.velX = 0
         self.velY = 0
 
-        self.width = 100
-        self.height = 100
-        self.spriteScale = 2
+        self.scale = 1.2
+        self.width = self.room.tileWidth
+        self.height = self.room.tileHeight
+        self.x = (self.game.width / 2) - (self.width / 2)
+        self.y = (self.game.height / 2) - (self.height / 2)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
         self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
         self.left, self.right, self.up, self.down = False, False, False, False
-        self.playerRect = pygame.Rect((self.game.width / 2) - (self.width / 2), (self.game.height / 2) - self.height / 2, self.width, self.height)
         self.currentFrame = 0
         self.lastUpdated = 0
         self.state = "idle"
+
         self.rightIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard05.png')),
                               pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard06.png'))]
 
@@ -56,26 +55,38 @@ class player:
 
         self.currentSprite = self.downIdleList[0] 
         
-    def movement(self, roomObj, keysPressed):
+    def movement(self):
         self.velX = 0
         self.velY = 0
         self.vel = self.baseSpd * self.spd
         self.diagVel = math.sqrt(1/2) * self.vel
         self.state = "idle"
 
-        if keysPressed[pygame.K_a]:
+        if self.game.keysPressed[pygame.K_a]:
             self.state = "left"           
             self.velX += -self.vel
-        if keysPressed[pygame.K_d]:
+        if self.game.keysPressed[pygame.K_d]:
             self.state = "right"  
             self.velX += self.vel
-        if keysPressed[pygame.K_s]:
+        if self.game.keysPressed[pygame.K_s]:
             self.state = "down"
             self.velY += self.vel
-        if keysPressed[pygame.K_w]:
+        if self.game.keysPressed[pygame.K_w]:
             self.state = "up"
             self.velY += -self.vel
 
+        self.normalisation()
+        
+    #    if ((self.rect.x + (self.width * 0.2))+ self.velX) <= self.game.roomObj.borderX or ((self.rect.x + (self.width * 0.8)) + self.velX) >= (self.game.roomObj.borderX + self.game.roomObj.borderWidth):
+    #        self.rect.x = self.rect.x
+    #    else:
+    #        self.rect.x += self.velX
+    #    if ((self.rect.y + (self.height * 0.2)) + self.velY) <= self.game.roomObj.borderY or ((self.rect.y + (self.height * 0.8)) + self.velY) >= (self.game.roomObj.borderY + self.game.roomObj.borderHeight):
+    #        self.rect.y = self.rect.y
+    #    else:
+    #        self.rect.y += self.velY
+
+    def normalisation(self):
         if self.velX == self.vel and self.velY == self.vel:
             self.velX = self.diagVel
             self.velY = self.diagVel
@@ -89,15 +100,8 @@ class player:
             self.velX = -self.diagVel
             self.velY = -self.diagVel
 
-        if ((self.playerRect.x + (self.width * 0.2))+ self.velX) <= roomObj.borderX or ((self.playerRect.x + (self.width * 0.8)) + self.velX) >= (roomObj.borderX + roomObj.borderWidth):
-            self.playerRect.x = self.playerRect.x
-        else:
-            self.playerRect.x += self.velX
-        if ((self.playerRect.y + (self.height * 0.2)) + self.velY) <= roomObj.borderY or ((self.playerRect.y + (self.height * 0.8)) + self.velY) >= (roomObj.borderY + roomObj.borderHeight):
-            self.playerRect.y = self.playerRect.y
-        else:
-            self.playerRect.y += self.velY
-
+    def blockCollision(self):
+        return
 
     def animate(self): 
         currentTime = pygame.time.get_ticks()      
@@ -125,10 +129,11 @@ class player:
                     self.currentSprite = self.downList[self.currentFrame]
                 if self.state == "up":
                     self.currentSprite = self.upList[self.currentFrame]
+        self.currentSprite = pygame.transform.scale(self.currentSprite,  (self.scale, self.scale))
 
-    def update(self, roomObj, keysPressed):
-        self.movement(roomObj, keysPressed)
+    def update(self):
+        self.movement()
         self.animate()    
 
-    def draw(self, window):    
-        window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), (self.playerRect.x, self.playerRect.y))
+    def draw(self):    
+        self.game.window.blit(self.currentSprite, (self.rect.x, self.rect.y))

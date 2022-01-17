@@ -3,6 +3,8 @@ playerStats = {"hp" : 100,
                "def" : 1,
                "spd" : 1}
 
+enemyStats = {}
+
 basicSpell = {"projLife" : 10,
              "baseDmg" : 1,
              "numShots" : 1,
@@ -11,7 +13,7 @@ basicSpell = {"projLife" : 10,
 
 colour = {"white" : (255, 255, 255),
          "black" : (0, 0, 0),
-         "gray" : (128, 128, 128),
+         "grey" : (128, 128, 128),
          "brown" : (102, 51, 0),
          "light brown" : (153, 102, 0),
          "red" : (255, 0, 0),
@@ -23,12 +25,12 @@ colour = {"white" : (255, 255, 255),
          "orange" : (255, 102, 0),
          "purple" : (102, 0, 102)} 
 
-map1 = [["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
-        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],    
-        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],  
-        ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-        ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"]]
+map1 = [["BBBBBBBBBBBBBBBB"],
+        ["BFFFFFFFFFFFFFFB"],
+        ["BFFFFFFFFFFFFFFB"],
+        ["BFFFFFFFFFFFFFFB"],  
+        ["BFFFFFFFFFFFFFFB"],
+        ["BFFFFFFFFFFFFFFB"],
+        ["BFFFFFFFFFFFFFFB"],  
+        ["BFFFFFFFFFFFFFFB"],
+        ["BBBBBBBBBBBBBBBB"]]

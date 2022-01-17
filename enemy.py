@@ -1,13 +1,4 @@
 import pygame
-import math
-import os
-import sys
-from player import *
-from item import *
-from UI import *
-from maps import *
-from sprites import *
-from constants import *
 
 class enemy:
     def __init__(self, hp, atk, defe, spd, projLife, baseDmg, size):

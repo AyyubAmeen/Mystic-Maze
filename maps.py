@@ -1,13 +1,5 @@
 import pygame
-import math
-import os
-import sys
-from player import *
-from enemy import *
-from item import *
-from UI import *
 from sprites import *
-from constants import *
 
 class map:
     def __init__(self):
@@ -29,20 +21,32 @@ class map:
 class room(map):
     def __init__(self, game):
         self.game = game
-        self.borderSize = 10
-        self.borderX = 50
-        self.borderY = 50
-        self.borderWidth = self.game.width - (2 * self.borderX)
-        self.borderHeight = self.game.height - (2 * self.borderY)
 
-    def drawRoom(self, mysticMazeObj):
-        return
+    #    self.borderSize = 10
+    #    self.borderX = 50
+    #    self.borderY = 50
+    #    self.borderWidth = self.game.width - (2 * self.borderX)
+    #    self.borderHeight = self.game.height - (2 * self.borderY)
+
+    def calcTileSize(self, tilemap):
+        self.tileWidth = self.game.width / len(tilemap[0])
+        self.tileHeight = self.game.height / len(tilemap)
+
+    def draw(self, tilemap):
+        for y, row in enumerate(tilemap): 
+            for x, tile in enumerate(row):
+                if tile == "B":
+                    b = block(self.game, self, x, y)
+                    b.draw()
+                if tile == "F":
+                    f = floor(self.game, self, x, y)
+                    f.draw()
         
-    def basicRoomDraw(self, window, colour, mysticMazeObj):
-        self.wallsRect = pygame.Rect(0, 0, mysticMazeObj.width, mysticMazeObj.height)
-        pygame.draw.rect(window, colour["brown"], self.wallsRect)
-        self.borderRect = pygame.Rect(self.borderX, self.borderY, self.borderWidth, self.borderHeight)
-        pygame.draw.rect(window, colour["light brown"], self.borderRect)
+    #def basicRoomDraw(self, colour):
+    #    self.wallsRect = pygame.Rect(0, 0, self.game.width, self.game.height)
+    #    pygame.draw.rect(self.game.window, colour["brown"], self.wallsRect)
+    #    self.borderRect = pygame.Rect(self.borderX, self.borderY, self.borderWidth, self.borderHeight)
+    #    pygame.draw.rect(self.game.window, colour["light brown"], self.borderRect)
 
-    def draw(self, window, colour, mysticMazeObj):
-        self.basicRoomDraw(window, colour, mysticMazeObj)
+    #def draw(self, colour):
+    #    self.basicRoomDraw(colour)

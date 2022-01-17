@@ -1,16 +1,10 @@
 import pygame
-import math
-import os
-import sys
-from player import *
-from enemy import *
-from item import *
-from maps import *
-from sprites import *
 from constants import *
 
 class gameUI:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
+
         self.healthSize = 5
         self.healthX = 15
         self.healthY = 15
@@ -20,26 +14,30 @@ class gameUI:
         self.itemBoxesWidth = 25
         self.itemBoxesHeight = 25
 
-    def healthbarUpdate(self, playerObj):
-        self.healthWidth = (100 * (playerObj.currentHp / playerObj.hp)) * self.healthSize
+    def healthbarUpdate(self):
+        self.healthWidth = (100 * (self.game.playerObj.currentHp / self.game.playerObj.hp)) * self.healthSize
         self.healthBackWidth = 100 * self.healthSize
 
         self.healthRect = pygame.Rect(self.healthX, self.healthY, self.healthWidth, self.healthHeight)
         self.healthBackRect = pygame.Rect(self.healthX, self.healthY, self.healthBackWidth, self.healthHeight)
 
-    def healthbarDraw(self, window, colour):
-        pygame.draw.rect(window, colour["black"], self.healthBackRect)
-        pygame.draw.rect(window, colour["red"], self.healthRect)        
+    def healthbarDraw(self):
+        pygame.draw.rect(self.game.window, colour["black"], self.healthBackRect)
+        pygame.draw.rect(self.game.window, colour["red"], self.healthRect)        
 
-    def itemBoxesDraw(self, window, colour):
+    def itemBoxesDraw(self):
         for i in range(5):
             self.itemBoxesX += i * 10
             self.itemBoxesRect = pygame.Rect(self.itemBoxesX, self.itemBoxesY, self.itemBoxesWidth, self.itemBoxesHeight)
-            pygame.draw.rect(window, colour["brown"], self.itemBoxesRect)
+            pygame.draw.rect(self.game.window, colour["brown"], self.itemBoxesRect)
     
-    def update(self, playerObj):
-        self.healthbarUpdate(playerObj)
+    def update(self):
+        self.healthbarUpdate()
 
-    def draw(self, window, colour):
-        self.itemBoxesDraw(window, colour)
-        self.healthbarDraw(window, colour)
+    def draw(self):
+        self.itemBoxesDraw()
+        self.healthbarDraw()
+
+class button:
+    def __init__(self):
+        return

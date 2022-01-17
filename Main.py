@@ -20,11 +20,14 @@ class game:
         self.running = True
         self.clock = pygame.time.Clock()
 
-    def objects(self):
-        self.playerObj = player(self, playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
-        self.spellObj = spell(basicSpell["projLife"], basicSpell["baseDmg"], basicSpell["numShots"], basicSpell["spd"], basicSpell["size"])
-        self.gameUIObj = gameUI()
+    def newInstance(self):
+        self.terrainSheet = pygame.image.load(os.path.join('Assets', 'terrain.png')).convert
+
         self.roomObj = room(self)
+        self.roomObj.calcTileSize(map1)
+        self.playerObj = player(self, self.roomObj, playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
+        self.spellObj = spell(self, basicSpell["projLife"], basicSpell["baseDmg"], basicSpell["numShots"], basicSpell["spd"], basicSpell["size"])
+        self.gameUIObj = gameUI(self)
 
     def gameEvent(self):
         for event in pygame.event.get():
@@ -50,23 +53,23 @@ class game:
                     self.playerObj.up, self.playerObj.faceRight, self.playerObj.faceLeft, self.playerObj.faceDown = False, False, False, False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self.spellObj.math(self.playerObj)
+                    self.spellObj.spawn()
 
     def gameUpdate(self):
-        self.spellObj.update(self.roomObj)   
-        self.playerObj.update(self.roomObj, self.keysPressed)
-        self.gameUIObj.update(self.playerObj)
+        self.spellObj.update()   
+        self.playerObj.update()
+        self.gameUIObj.update()
 
     def gameDraw(self):
         self.window.fill(colour["white"])
-        self.roomObj.draw(self.window, colour, self)
-        self.spellObj.draw(self.window, colour)
-        self.playerObj.draw(self.window)
-        self.gameUIObj.draw(self.window, colour)
+        self.roomObj.draw(map1)
+        self.spellObj.draw()
+        self.playerObj.draw()
+        self.gameUIObj.draw()
         pygame.display.update()  
 
     def mainMenuEvent(self):
-        return
+        return 
 
     def mainMenuUpdate(self):
         return
@@ -93,7 +96,7 @@ class game:
         return
 
     def main(self):
-        self.objects()
+        self.newInstance()
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Mystic Maze")
         while self.running:
