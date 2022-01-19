@@ -1,3 +1,5 @@
+spriteSize = 32
+
 playerStats = {"hp" : 100,
                "atk" : 1,
                "def" : 1,
@@ -25,12 +27,12 @@ colour = {"white" : (255, 255, 255),
          "orange" : (255, 102, 0),
          "purple" : (102, 0, 102)} 
 
-map1 = [["BBBBBBBBBBBBBBBB"],
-        ["BFFFFFFFFFFFFFFB"],
-        ["BFFFFFFFFFFFFFFB"],
-        ["BFFFFFFFFFFFFFFB"],  
-        ["BFFFFFFFFFFFFFFB"],
-        ["BFFFFFFFFFFFFFFB"],
-        ["BFFFFFFFFFFFFFFB"],  
-        ["BFFFFFFFFFFFFFFB"],
-        ["BBBBBBBBBBBBBBBB"]]
+baseMap = ["BBBBBBBBBBBBBBBB",
+           "BFFFFFFFFFFFFFFB",
+           "BFFFFFFFFFFFFFFB",
+           "BFFFFFFFFFFFFFFB",  
+           "BFFFFFFFFFFFFFFB",
+           "BFFFFFFFFFFFFFFB",
+           "BFFFFFFFFFFFFFFB",  
+           "BFFFFFFFFFFFFFFB",
+           "BBBBBBBBBBBBBBBB"]

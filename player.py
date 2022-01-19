@@ -17,8 +17,8 @@ class player:
         self.velY = 0
 
         self.scale = 1.2
-        self.width = self.room.tileWidth
-        self.height = self.room.tileHeight
+        self.width = self.room.tileWidth * self.scale
+        self.height = self.room.tileHeight * self.scale
         self.x = (self.game.width / 2) - (self.width / 2)
         self.y = (self.game.height / 2) - (self.height / 2)
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -80,11 +80,11 @@ class player:
     #    if ((self.rect.x + (self.width * 0.2))+ self.velX) <= self.game.roomObj.borderX or ((self.rect.x + (self.width * 0.8)) + self.velX) >= (self.game.roomObj.borderX + self.game.roomObj.borderWidth):
     #        self.rect.x = self.rect.x
     #    else:
-    #        self.rect.x += self.velX
+        self.rect.x += self.velX
     #    if ((self.rect.y + (self.height * 0.2)) + self.velY) <= self.game.roomObj.borderY or ((self.rect.y + (self.height * 0.8)) + self.velY) >= (self.game.roomObj.borderY + self.game.roomObj.borderHeight):
     #        self.rect.y = self.rect.y
     #    else:
-    #        self.rect.y += self.velY
+        self.rect.y += self.velY
 
     def normalisation(self):
         if self.velX == self.vel and self.velY == self.vel:
@@ -129,11 +129,10 @@ class player:
                     self.currentSprite = self.downList[self.currentFrame]
                 if self.state == "up":
                     self.currentSprite = self.upList[self.currentFrame]
-        self.currentSprite = pygame.transform.scale(self.currentSprite,  (self.scale, self.scale))
 
     def update(self):
         self.movement()
         self.animate()    
 
     def draw(self):    
-        self.game.window.blit(self.currentSprite, (self.rect.x, self.rect.y))
+        self.game.window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), self.rect)

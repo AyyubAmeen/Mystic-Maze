@@ -29,18 +29,24 @@ class room(map):
     #    self.borderHeight = self.game.height - (2 * self.borderY)
 
     def calcTileSize(self, tilemap):
+
         self.tileWidth = self.game.width / len(tilemap[0])
         self.tileHeight = self.game.height / len(tilemap)
 
     def draw(self, tilemap):
+        self.blocksRects = []
+        self.floorRects = []
+
         for y, row in enumerate(tilemap): 
             for x, tile in enumerate(row):
                 if tile == "B":
                     b = block(self.game, self, x, y)
                     b.draw()
+                    self.blocksRects.append(b.rect)
                 if tile == "F":
                     f = floor(self.game, self, x, y)
                     f.draw()
+                    self.floorRects.append(f.append)
         
     #def basicRoomDraw(self, colour):
     #    self.wallsRect = pygame.Rect(0, 0, self.game.width, self.game.height)

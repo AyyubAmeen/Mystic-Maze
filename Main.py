@@ -19,12 +19,14 @@ class game:
         self.state = "game"
         self.running = True
         self.clock = pygame.time.Clock()
-
-    def newInstance(self):
         self.terrainSheet = pygame.image.load(os.path.join('Assets', 'terrain.png')).convert
 
+    def newInstance(self):
+        self.window = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption("Mystic Maze")
+
         self.roomObj = room(self)
-        self.roomObj.calcTileSize(map1)
+        self.roomObj.calcTileSize(baseMap)
         self.playerObj = player(self, self.roomObj, playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
         self.spellObj = spell(self, basicSpell["projLife"], basicSpell["baseDmg"], basicSpell["numShots"], basicSpell["spd"], basicSpell["size"])
         self.gameUIObj = gameUI(self)
@@ -62,7 +64,7 @@ class game:
 
     def gameDraw(self):
         self.window.fill(colour["white"])
-        self.roomObj.draw(map1)
+        #self.roomObj.draw(baseMap)
         self.spellObj.draw()
         self.playerObj.draw()
         self.gameUIObj.draw()
@@ -97,8 +99,6 @@ class game:
 
     def main(self):
         self.newInstance()
-        self.window = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Mystic Maze")
         while self.running:
             self.clock.tick(self.fps)
             if self.state == "game":

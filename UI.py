@@ -9,10 +9,9 @@ class gameUI:
         self.healthX = 15
         self.healthY = 15
         self.healthHeight = 25
-        self.itemBoxesX = 750
-        self.itemBoxesY = 450
-        self.itemBoxesWidth = 25
-        self.itemBoxesHeight = 25
+        self.itemBoxesY = 600
+        self.itemBoxesWidth = 100
+        self.itemBoxesHeight = 100
 
     def healthbarUpdate(self):
         self.healthWidth = (100 * (self.game.playerObj.currentHp / self.game.playerObj.hp)) * self.healthSize
@@ -26,10 +25,12 @@ class gameUI:
         pygame.draw.rect(self.game.window, colour["red"], self.healthRect)        
 
     def itemBoxesDraw(self):
+        self.itemBoxesX = 600
         for i in range(5):
-            self.itemBoxesX += i * 10
+            self.itemBoxesX += 110
             self.itemBoxesRect = pygame.Rect(self.itemBoxesX, self.itemBoxesY, self.itemBoxesWidth, self.itemBoxesHeight)
             pygame.draw.rect(self.game.window, colour["brown"], self.itemBoxesRect)
+
     
     def update(self):
         self.healthbarUpdate()
