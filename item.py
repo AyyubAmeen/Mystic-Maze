@@ -16,15 +16,8 @@ class spell:
         
     def update(self):
         for index, bullet in enumerate(self.projList):
-            #if (bullet[0] + bullet[2]) <= self.game.roomObj.borderX or (bullet[0] + bullet[2]) >= (self.game.roomObj.borderX + self.game.roomObj.borderWidth):
-            #    self.projList.pop(index)
-            #else:
-                bullet[0] += bullet[2]
-
-            #if (bullet[1] + bullet[3]) <= self.game.roomObj.borderY or (bullet[1] + bullet[3]) >= (self.game.roomObj.borderY + self.game.roomObj.borderHeight):
-            #    self.projList.pop(index)
-            #else:
-                bullet[1] += bullet[3]
+            bullet[0] += bullet[2]
+            bullet[1] += bullet[3]
     
     def spawn(self):
             mouseX, mouseY = pygame.mouse.get_pos()

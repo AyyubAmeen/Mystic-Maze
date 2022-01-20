@@ -1,6 +1,7 @@
 import pygame
 import math
 import os
+from sprites import *
 
 class player:
     def __init__(self, game, room, hp, atk, defe, spd):
@@ -22,6 +23,7 @@ class player:
         self.x = (self.game.width / 2) - (self.width / 2)
         self.y = (self.game.height / 2) - (self.height / 2)
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.spritesheet = spritesheet(self.game.wizardSheet)
 
         self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
         self.left, self.right, self.up, self.down = False, False, False, False

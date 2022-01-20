@@ -5,9 +5,9 @@ class spritesheet:
     def __init__(self, sheet):
         self.sheet = sheet
 
-    def getSprite(self, x, y, spriteWidth, spriteHeight, width, height, colour):
+    def getSprite(self, x, y, width, height, colour):
         sprite = pygame.Surface((width, height))
-        sprite.blit(self.sheet, (0, 0), (x, y, spriteWidth, spriteHeight))
+        sprite.blit(self.sheet, (0, 0), (x, y, width, height))
         pygame.transform.scale(sprite, (width, height))
         sprite.set_colorkey(colour)
         return sprite
@@ -31,13 +31,13 @@ class block(terrain):
         super().__init__(game, room, x, y)
 
     def draw(self):
-        self.sprite = self.spritesheet.getSprite(128, 480, self.spriteWidth, self.spriteHeight, self.width, self.height, colour["black"])
-        self.game.window.blit(self.surf, (self.rect.x, self.rect.y))
+        self.sprite = self.spritesheet.getSprite(128, 480, self.spriteWidth, self.spriteHeight, colour["black"])
+        self.game.window.blit(pygame.transform.scale(self.sprite, (self.width, self.height)), (self.rect.x, self.rect.y))
 
 class floor(terrain):
     def __init__(self, game, room, x, y):
         super().__init__(game, room, x, y)
 
     def draw(self):
-        self.sprite = self.spritesheet.getSprite(416, 96, self.spriteWidth, self.spriteHeight, self.width, self.height, colour["black"])
-        self.game.window.blit(self.surf, (self.rect.x, self.rect.y))
+        self.sprite = self.spritesheet.getSprite(416, 96, self.spriteWidth, self.spriteHeight, colour["black"])
+        self.game.window.blit(pygame.transform.scale(self.sprite, (self.width, self.height)), (self.rect.x, self.rect.y))

@@ -1,6 +1,5 @@
 import pygame
 import math
-import os
 import sys
 from player import *
 from enemy import *
@@ -19,7 +18,8 @@ class game:
         self.state = "game"
         self.running = True
         self.clock = pygame.time.Clock()
-        self.terrainSheet = pygame.image.load(os.path.join('Assets', 'terrain.png')).convert
+        self.terrainSheet = pygame.image.load('Assets/terrain.png')
+        self.wizardSheet = pygame.image.load('Assets/wizard.png')
 
     def newInstance(self):
         self.window = pygame.display.set_mode((self.width, self.height))
@@ -64,7 +64,7 @@ class game:
 
     def gameDraw(self):
         self.window.fill(colour["white"])
-        #self.roomObj.draw(baseMap)
+        self.roomObj.draw(baseMap)
         self.spellObj.draw()
         self.playerObj.draw()
         self.gameUIObj.draw()
@@ -101,9 +101,10 @@ class game:
         self.newInstance()
         while self.running:
             self.clock.tick(self.fps)
+            self.keysPressed = pygame.key.get_pressed()
+            self.mousePressed = pygame.mouse.get_pressed()
             if self.state == "game":
                 self.gameEvent()
-                self.keysPressed = pygame.key.get_pressed()
                 self.gameUpdate()
                 self.gameDraw()
         pygame.quit()

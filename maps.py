@@ -42,11 +42,9 @@ class room(map):
                 if tile == "B":
                     b = block(self.game, self, x, y)
                     b.draw()
-                    self.blocksRects.append(b.rect)
                 if tile == "F":
                     f = floor(self.game, self, x, y)
                     f.draw()
-                    self.floorRects.append(f.append)
         
     #def basicRoomDraw(self, colour):
     #    self.wallsRect = pygame.Rect(0, 0, self.game.width, self.game.height)
