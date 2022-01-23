@@ -4,22 +4,25 @@ import os
 from sprites import *
 
 class player:
-    def __init__(self, game, room, hp, atk, defe, spd):
+    def __init__(self, game, maxHp, hp, maxMp, mp, mpRegen, atk, defe, spd):
         self.game = game
-        self.room = room
 
+        self.maxHp = maxHp
         self.hp = hp
-        self.currentHp = hp
+        self.maxMp = maxMp
+        self.mp = mp
+        self.mpRegen = mpRegen
         self.atk = atk
         self.defe = defe
         self.spd = spd
-        self.baseSpd = 7
+        self.baseSpd = 5
         self.velX = 0
         self.velY = 0
+        self.regenLastUpdated = 0
 
         self.scale = 1.2
-        self.width = self.room.tileWidth * self.scale
-        self.height = self.room.tileHeight * self.scale
+        self.width = self.game.tileWidth * self.scale
+        self.height = self.game.tileHeight * self.scale
         self.x = (self.game.width / 2) - (self.width / 2)
         self.y = (self.game.height / 2) - (self.height / 2)
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -31,29 +34,29 @@ class player:
         self.lastUpdated = 0
         self.state = "idle"
 
-        self.rightIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard05.png')),
-                              pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard06.png'))]
+        self.rightIdleList = [pygame.image.load(os.path.join('Assets/Player Frames/Wizard05.png')),
+                              pygame.image.load(os.path.join('Assets/Player Frames/Wizard06.png'))]
 
-        self.downIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard00.png')),
-                             pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard01.png'))]
+        self.downIdleList = [pygame.image.load(os.path.join('Assets/Player Frames/Wizard00.png')),
+                             pygame.image.load(os.path.join('Assets/Player Frames/Wizard01.png'))]
 
-        self.upIdleList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard10.png')),
-                           pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard11.png'))]
+        self.upIdleList = [pygame.image.load(os.path.join('Assets/Player Frames/Wizard10.png')),
+                           pygame.image.load(os.path.join('Assets/Player Frames/Wizard11.png'))]
 
-        self.rightList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard07.png')),
-                          pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard08.png')),
-                          pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard09.png')),
-                          pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard08.png'))]
+        self.rightList = [pygame.image.load(os.path.join('Assets/Player Frames/Wizard07.png')),
+                          pygame.image.load(os.path.join('Assets/Player Frames/Wizard08.png')),
+                          pygame.image.load(os.path.join('Assets/Player Frames/Wizard09.png')),
+                          pygame.image.load(os.path.join('Assets/Player Frames/Wizard08.png'))]
 
-        self.downList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard02.png')),
-                         pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard03.png')),
-                         pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard04.png')),
-                         pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard03.png'))]
+        self.downList = [pygame.image.load(os.path.join('Assets/Player Frames/Wizard02.png')),
+                         pygame.image.load(os.path.join('Assets/Player Frames/Wizard03.png')),
+                         pygame.image.load(os.path.join('Assets/Player Frames/Wizard04.png')),
+                         pygame.image.load(os.path.join('Assets/Player Frames/Wizard03.png'))]
 
-        self.upList = [pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard12.png')),
-                       pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard13.png')),
-                       pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard14.png')),
-                       pygame.image.load(os.path.join('Assets', 'Player Frames', 'Wizard13.png'))]
+        self.upList = [pygame.image.load(os.path.join('Assets/Player Frames/Wizard12.png')),
+                       pygame.image.load(os.path.join('Assets/Player Frames/Wizard13.png')),
+                       pygame.image.load(os.path.join('Assets/Player Frames/Wizard14.png')),
+                       pygame.image.load(os.path.join('Assets/Player Frames/Wizard13.png'))]
 
         self.currentSprite = self.downIdleList[0] 
         
@@ -78,14 +81,8 @@ class player:
             self.velY += -self.vel
 
         self.normalisation()
-        
-    #    if ((self.rect.x + (self.width * 0.2))+ self.velX) <= self.game.roomObj.borderX or ((self.rect.x + (self.width * 0.8)) + self.velX) >= (self.game.roomObj.borderX + self.game.roomObj.borderWidth):
-    #        self.rect.x = self.rect.x
-    #    else:
+
         self.rect.x += self.velX
-    #    if ((self.rect.y + (self.height * 0.2)) + self.velY) <= self.game.roomObj.borderY or ((self.rect.y + (self.height * 0.8)) + self.velY) >= (self.game.roomObj.borderY + self.game.roomObj.borderHeight):
-    #        self.rect.y = self.rect.y
-    #    else:
         self.rect.y += self.velY
 
     def normalisation(self):
@@ -104,6 +101,13 @@ class player:
 
     def blockCollision(self):
         return
+
+    def regen(self):
+        currentTime = pygame.time.get_ticks()
+        if currentTime - self.regenLastUpdated > 1000:
+            self.regenLastUpdated = currentTime
+            if self.mp != self.maxMp:
+                self.mp += self.mpRegen
 
     def animate(self): 
         currentTime = pygame.time.get_ticks()      
@@ -134,7 +138,8 @@ class player:
 
     def update(self):
         self.movement()
-        self.animate()    
+        self.animate() 
+        self.regen()
 
     def draw(self):    
         self.game.window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), self.rect)

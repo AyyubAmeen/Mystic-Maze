@@ -21,14 +21,18 @@ class game:
         self.terrainSheet = pygame.image.load('Assets/terrain.png')
         self.wizardSheet = pygame.image.load('Assets/wizard.png')
 
-    def newInstance(self):
+    def gameScale(self, baseMap):
+        self.tileWidth = self.width / len(baseMap[0])
+        self.tileHeight = self.height / len(baseMap)
+
+    def newGame(self):
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Mystic Maze")
 
+        self.gameScale(baseMap)
         self.roomObj = room(self)
-        self.roomObj.calcTileSize(baseMap)
-        self.playerObj = player(self, self.roomObj, playerStats["hp"], playerStats["atk"], playerStats["def"], playerStats["spd"])
-        self.spellObj = spell(self, basicSpell["projLife"], basicSpell["baseDmg"], basicSpell["numShots"], basicSpell["spd"], basicSpell["size"])
+        self.playerObj = player(self, playerStats["maxHp"], playerStats["hp"], playerStats["maxMp"], playerStats["mp"], playerStats["mpRegen"], playerStats["atk"], playerStats["def"], playerStats["spd"])
+        self.spellObj = spell(self, self.playerObj, basicSpell["projLife"], basicSpell["baseDmg"], basicSpell["numShots"], basicSpell["spd"], basicSpell["size"])
         self.gameUIObj = gameUI(self)
 
     def gameEvent(self):
@@ -53,9 +57,6 @@ class game:
                     self.playerObj.down, self.playerObj.faceRight, self.playerObj.faceUp, self.playerObj.faceLeft = False, False, False, False
                 if event.type == pygame.K_w:
                     self.playerObj.up, self.playerObj.faceRight, self.playerObj.faceLeft, self.playerObj.faceDown = False, False, False, False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    self.spellObj.spawn()
 
     def gameUpdate(self):
         self.spellObj.update()   
@@ -98,7 +99,7 @@ class game:
         return
 
     def main(self):
-        self.newInstance()
+        self.newGame()
         while self.running:
             self.clock.tick(self.fps)
             self.keysPressed = pygame.key.get_pressed()
