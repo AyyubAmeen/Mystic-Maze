@@ -4,7 +4,7 @@ playerStats = {"maxHp" : 200,
                "hp" : 200,
                "maxMp" : 100,
                "mp" : 100,
-               "mpRegen" : 5,
+               "mpRegen" : 0.5,
                "atk" : 1,
                "def" : 1,
                "spd" : 1}

@@ -1,5 +1,5 @@
 import pygame
-from sprites import *
+from terrain import *
 
 class map:
     def __init__(self):
@@ -24,12 +24,12 @@ class room(map):
         self.currentRoom = 1
 
     def newRoom(self, tilemap):
-        self.blocksRects = []
+        self.blockRects = []
         for y, row in enumerate(tilemap): 
             for x, tile in enumerate(row):
                 if tile == "B":
                     b = block(self.game, x, y)
-                    self.blocksRects.append(b.rect)
+                    self.blockRects.append(b.rect)
 
     def draw(self, tilemap):
         for y, row in enumerate(tilemap): 

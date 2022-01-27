@@ -1,16 +1,6 @@
 import pygame
 from constants import *
-
-class spritesheet:
-    def __init__(self, sheet):
-        self.sheet = sheet
-
-    def getSprite(self, x, y, width, height, colour):
-        sprite = pygame.Surface((width, height))
-        sprite.blit(self.sheet, (0, 0), (x, y, width, height))
-        pygame.transform.scale(sprite, (width, height))
-        sprite.set_colorkey(colour)
-        return sprite
+from framework import *
 
 class terrain:
     def __init__(self, game, x, y):

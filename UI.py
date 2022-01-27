@@ -50,7 +50,3 @@ class gameUI:
     def draw(self):
         self.itemBoxesDraw()
         self.barDraw()
-
-class button:
-    def __init__(self):
-        return

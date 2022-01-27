@@ -1,7 +1,7 @@
 import pygame
 import math
 import os
-from sprites import *
+from terrain import *
 
 class player:
     def __init__(self, game, maxHp, hp, maxMp, mp, mpRegen, atk, defe, spd):
@@ -28,11 +28,10 @@ class player:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.spritesheet = spritesheet(self.game.wizardSheet)
 
-        self.faceLeft, self.faceRight, self.faceUp, self.faceDown = False, False, False, False
-        self.left, self.right, self.up, self.down = False, False, False, False
         self.currentFrame = 0
         self.lastUpdated = 0
-        self.state = "idle"
+        self.facing = "down"
+        self.spriteState = "idle"
 
         self.rightIdleList = [pygame.image.load(os.path.join('Assets/Player Frames/Wizard05.png')),
                               pygame.image.load(os.path.join('Assets/Player Frames/Wizard06.png'))]
@@ -65,25 +64,15 @@ class player:
         self.velY = 0
         self.vel = self.baseSpd * self.spd
         self.diagVel = math.sqrt(1/2) * self.vel
-        self.state = "idle"
 
-        if self.game.keysPressed[pygame.K_a]:
-            self.state = "left"           
+        if self.game.keysPressed[pygame.K_a]:      
             self.velX += -self.vel
         if self.game.keysPressed[pygame.K_d]:
-            self.state = "right"  
             self.velX += self.vel
         if self.game.keysPressed[pygame.K_s]:
-            self.state = "down"
             self.velY += self.vel
         if self.game.keysPressed[pygame.K_w]:
-            self.state = "up"
             self.velY += -self.vel
-
-        self.normalisation()
-
-        self.rect.x += self.velX
-        self.rect.y += self.velY
 
     def normalisation(self):
         if self.velX == self.vel and self.velY == self.vel:
@@ -99,29 +88,61 @@ class player:
             self.velX = -self.diagVel
             self.velY = -self.diagVel
 
-    def blockCollision(self):
-        return
+    def setState(self):
+        self.state = "idle"
 
-    def regen(self):
+        if self.game.keysPressed[pygame.K_a]:
+            self.state = "left" 
+            self.facing = "left"
+        if self.game.keysPressed[pygame.K_d]:
+            self.state = "right"  
+            self.facing = "right"
+        if self.game.keysPressed[pygame.K_s]:
+            self.state = "down"
+            self.facing = "down"
+        if self.game.keysPressed[pygame.K_w]:
+            self.state = "up"
+            self.facing = "up"
+
+    def blockCollision(self):
+        for block in self.game.roomObj.blockRects:
+            collide = pygame.Rect.colliderect(self.rect, block)
+            if self.rect.x == block.right: 
+                if collide:
+                    self.rect.y += self.velY
+            elif self.rect.right ==  block.x:
+                if collide:
+                    self.rect.y += self.velY
+            elif self.rect.bottom == block.y:
+                if collide:
+                    self.rect.x += self.velX
+            elif self.rect.y == block.bottom:
+                if collide:
+                    self.rect.x += self.velX
+            else:
+                self.rect.x += self.velX
+                self.rect.y += self.velY
+
+    def regeneration(self):
         currentTime = pygame.time.get_ticks()
-        if currentTime - self.regenLastUpdated > 1000:
+        if currentTime - self.regenLastUpdated > 50:
             self.regenLastUpdated = currentTime
             if self.mp != self.maxMp:
                 self.mp += self.mpRegen
 
-    def animate(self): 
+    def animation(self): 
         currentTime = pygame.time.get_ticks()      
         if self.state == "idle":
             if currentTime - self.lastUpdated > 200:
                 self.lastUpdated = currentTime
                 self.currentFrame = (self.currentFrame + 1) % len(self.downIdleList)
-                if self.faceRight == True:
+                if self.facing == "left":
+                    self.currentSprite = pygame.transform.flip(self.rightIdleList[self.currentFrame], True, False)
+                if self.facing == "right":
                     self.currentSprite = self.rightIdleList[self.currentFrame]
-                if self.faceLeft == True:
-                    self.currentSprite = pygame.transform.flip(self.rightIdleList[self.currentFrame])
-                if self.faceDown == True:
+                if self.facing == "down":
                     self.currentSprite = self.downIdleList[self.currentFrame]
-                if self.faceUp == True:        
+                if self.facing == "up":        
                     self.currentSprite = self.upIdleList[self.currentFrame]
         else:
             if currentTime - self.lastUpdated > 150:
@@ -138,8 +159,13 @@ class player:
 
     def update(self):
         self.movement()
-        self.animate() 
-        self.regen()
-
+        self.normalisation()
+        self.setState()
+        self.animation() 
+        self.regeneration()
+        #self.blockCollision()
+        self.rect.x += self.velX
+        self.rect.y += self.velY
+        
     def draw(self):    
         self.game.window.blit(pygame.transform.scale(self.currentSprite, (self.width,self.height)), self.rect)
