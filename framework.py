@@ -1,4 +1,5 @@
 import pygame
+import json
 from constants import *
 
 class spritesheet:
@@ -13,6 +14,10 @@ class spritesheet:
         return sprite
 
 class animate:
+    def __init__(self):
+        return
+
+class load:
     def __init__(self):
         return
 

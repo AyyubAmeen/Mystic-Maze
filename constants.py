@@ -9,9 +9,18 @@ playerStats = {"maxHp" : 100,
                "def" : 1,
                "spd" : 1}
 
-basicSpell = {"type" : "straight",
+straightSpell = {"type" : "straight",
               "dmg" : 1,
               "numShots" : 1,
+              "limit" : 10,
+              "spd" : 7.5,
+              "size" : 5,
+              "mpCost" : 10,
+              "cooldown" : 300}
+
+shotgunSpell = {"type" : "straight",
+              "dmg" : 1,
+              "numShots" : 5,
               "limit" : 10,
               "spd" : 7.5,
               "size" : 5,
@@ -41,12 +50,12 @@ colour = {"white" : (255, 255, 255),
          "orange" : (255, 102, 0),
          "purple" : (102, 0, 102)} 
 
-baseMap = ["BBBBBBBFFBBBBBBB",
+baseMap = ["BBBBBBBBBBBBBBBB",
            "BFFFFFFFFFFFFFFB",
            "BFFFFFFFFFFFFFFB",
            "BFFFFFFFFFFFFFFB",  
-           "FFFFFFFFFFFFFFFF",
+           "BFFFFFFFFFFFFFFB",
            "BFFFFFFFFFFFFFFB",
            "BFFFFFFFFFFFFFFB",  
            "BFFFFFFFFFFFFFFB",
-           "BBBBBBBFFBBBBBBB"]
+           "BBBBBBBBBBBBBBBB"]

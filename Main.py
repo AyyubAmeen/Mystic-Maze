@@ -1,8 +1,7 @@
 import pygame
-import math
 import sys
 from player import *
-from enemy import *
+#from enemy import *
 from item import *
 from UI import *
 from maps import *
@@ -35,7 +34,7 @@ class game:
         self.roomObj = room(self)
         self.roomObj.newRoom(baseMap)
         self.playerObj = player(self, playerStats)
-        self.spellObj = spell(self, basicSpell)
+        self.spellObj = spell(self, straightSpell)
         self.gameUIObj = gameUI(self)
 
     def gameUpdate(self):

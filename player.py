@@ -18,8 +18,8 @@ class player:
         self.baseSpd = 5
         self.change = pygame.Vector2()
 
-        self.width = self.game.tileWidth
-        self.height = self.game.tileHeight
+        self.width = self.game.tileWidth * 0.9
+        self.height = self.game.tileHeight * 0.9
         self.x = (self.game.width / 2) - (self.width / 2)
         self.y = (self.game.height / 2) - (self.height / 2)
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -171,4 +171,6 @@ class player:
         self.regeneration()
         
     def draw(self):    
+        pygame.draw.rect(self.game.window, colour["blue"], self.rect)
+        self.spriteRect = pygame.Rect(self.rect.x - (0.075 * self.width), self.rect.y - (0.075 * self.height), self.width, self.height)
         self.game.window.blit(pygame.transform.scale(self.currentSprite, (self.width, self.height)), self.rect)
