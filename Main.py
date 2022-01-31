@@ -16,6 +16,7 @@ class game:
         self.fps = 60
         self.width = 1280
         self.height = 720
+        self.rect = pygame.Rect(0, 0, 1280, 720)
         self.state = "game"
         self.running = True
         self.clock = pygame.time.Clock()
@@ -33,14 +34,9 @@ class game:
         self.gameScale(baseMap)
         self.roomObj = room(self)
         self.roomObj.newRoom(baseMap)
-        self.playerObj = player(self, playerStats["maxHp"], playerStats["hp"], playerStats["maxMp"], playerStats["mp"], playerStats["mpRegen"], playerStats["atk"], playerStats["def"], playerStats["spd"])
-        self.spellObj = spell(self, basicSpell["projLife"], basicSpell["baseDmg"], basicSpell["numShots"], basicSpell["spd"], basicSpell["size"])
+        self.playerObj = player(self, playerStats)
+        self.spellObj = spell(self, basicSpell)
         self.gameUIObj = gameUI(self)
-
-    def gameEvent(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
 
     def gameUpdate(self):
         self.spellObj.update()   
@@ -55,25 +51,16 @@ class game:
         self.gameUIObj.draw()
         pygame.display.update()  
 
-    def mainMenuEvent(self):
-        return 
-
     def mainMenuUpdate(self):
         return
 
     def mainMenuDraw(self):
         return
 
-    def pauseMenuEvent(self):
-        return
-
     def pauseMenuUpdate(self):
         return
 
     def pauseMenuDraw(self):
-        return
-
-    def settingsEvent(self):
         return
 
     def settingsUpdate(self):
@@ -85,12 +72,14 @@ class game:
     def main(self):
         self.newGame()
         while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
             self.clock.tick(self.fps)
             self.keysPressed = pygame.key.get_pressed()
             self.mousePressed = pygame.mouse.get_pressed()
             self.mousePos = pygame.mouse.get_pos()
             if self.state == "game":
-                self.gameEvent()
                 self.gameUpdate()
                 self.gameDraw()
         pygame.quit()

@@ -1,6 +1,10 @@
 import pygame
 from constants import *
 
+class UI:
+    def __init__(self):
+        return
+
 class gameUI:
     def __init__(self, game):
         self.game = game

@@ -31,6 +31,8 @@ class button:
         self.textRect = self.text.get_rect()
         self.textRect.center = (x + self.textRect.width/2, y + self.textRect.height/2)
 
+        self.state = "no"
+
     def pressed(self):
         if self.textRect.collidepoint(self.game.mousePos):
             if self.game.mousePressed[0]:
@@ -38,12 +40,29 @@ class button:
             return False
         return False
 
-    def draw(self, window, text, bold, color, x, y, clicking):
-        text = self.font.render(text, bold, color)
-        hoverText = self.font.render(text, bold, color)
+    def draw(self, window, text, bold, colour, x, y):
+        text = self.font.render(text, True, colour)
+        hoverText = self.font.render(text, True, colour)
         textRect = text.get_rect()
         textRect.center = (x + textRect.width/2, y + textRect.height/2)
         self.game.window.blit(text, (x, y))
 
     def update(self):
         self.pressed()
+
+class drawText:
+    def __init__(self, game, font, size, text, colour):
+        self.game = game
+        self.font = pygame.font.Font(font, size)
+        self.rect = font.get_rect()
+        self.text = font.render(text, True, colour)
+        self.game.window.blit(text, (x, y))
+
+
+class sizeScaling:
+    def __init__(self):
+        return
+
+class statScaling:
+    def __init__(self):
+        return

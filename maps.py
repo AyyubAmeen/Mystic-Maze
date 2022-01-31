@@ -24,12 +24,12 @@ class room(map):
         self.currentRoom = 1
 
     def newRoom(self, tilemap):
-        self.blockRects = []
+        self.blocks = []
         for y, row in enumerate(tilemap): 
             for x, tile in enumerate(row):
                 if tile == "B":
                     b = block(self.game, x, y)
-                    self.blockRects.append(b.rect)
+                    self.blocks.append(b)
 
     def draw(self, tilemap):
         for y, row in enumerate(tilemap): 
