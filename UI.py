@@ -1,8 +1,28 @@
 import pygame
 from constants import *
+from framework import *
 
 class UI:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
+
+    def mainMenuUpdate(self):
+        return
+
+    def mainMenuDraw(self):
+        button(self.game, "BACKTO1982.ttf", 32, "test", self.game.rect.center[0], self.game.rect.center[1])
+        return
+
+    def pauseMenuUpdate(self):
+        return
+
+    def pauseMenuDraw(self):
+        return
+
+    def settingsUpdate(self):
+        return
+
+    def settingsDraw(self):
         return
 
 class gameUI:

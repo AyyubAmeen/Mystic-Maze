@@ -19,11 +19,6 @@ class spell:
         self.lastUpdated = 0
 
         self.projList = []
-        
-    def update(self):
-        self.move()
-        if self.type == "straight":
-            self.straightSpawn()
     
     def move(self):
         for index, bullet in enumerate(self.projList):
@@ -57,6 +52,11 @@ class spell:
 
     def shotgunSpawn(self):
         return
+
+    def update(self):
+        self.move()
+        if self.type == "straight":
+            self.straightSpawn()
 
     def draw(self):
         for bullet in self.projList:

@@ -18,13 +18,16 @@ class player:
         self.baseSpd = 5
         self.change = pygame.Vector2()
 
-        self.width = self.game.tileWidth * 0.9
-        self.height = self.game.tileHeight * 0.9
-        self.x = (self.game.width / 2) - (self.width / 2)
-        self.y = (self.game.height / 2) - (self.height / 2)
-        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.spritesheet = spritesheet(self.game.wizardSheet)
+        self.width = self.game.npcWidth
+        self.height = self.game.npcHeight
+        self.rect = pygame.Rect(0, 0, self.width, self.height)
+        self.rect.center = self.game.rect.center
 
+        self.spriteWidth = self.game.tileWidth
+        self.spriteHeight = self.game.tileHeight
+        self.spriteRect = pygame.Rect(self.rect.x, self.rect.y, self.spriteWidth, self.spriteHeight)
+
+        self.spritesheet = spritesheet(self.game.wizardSheet)
         self.moveAnimCd = 150
         self.idleAnimCd = 300
         self.currentFrame = 0
@@ -56,7 +59,7 @@ class player:
                        pygame.image.load('Assets/Player Frames/Wizard14.png'),
                        pygame.image.load('Assets/Player Frames/Wizard13.png')]
 
-        self.currentSprite = self.downIdleList[0] 
+        self.sprite = self.downIdleList[0] 
      
     def movement(self):
         self.state = "idle"
@@ -103,6 +106,7 @@ class player:
         self.rect.y += self.change.y
         self.axis = "y"
         self.blockCollision()
+        self.spriteRect.center = self.rect.center
 
     def windowCollision(self):
         if (self.rect.x + self.width + self.change.x) >= (self.game.width):
@@ -145,25 +149,25 @@ class player:
                 self.animLastUpdated = currentTime
                 self.currentFrame = (self.currentFrame + 1) % len(self.downIdleList)
                 if self.facing == "left":
-                    self.currentSprite = pygame.transform.flip(self.rightIdleList[self.currentFrame], True, False)
+                    self.sprite = pygame.transform.flip(self.rightIdleList[self.currentFrame], True, False)
                 if self.facing == "right":
-                    self.currentSprite = self.rightIdleList[self.currentFrame]
+                    self.sprite = self.rightIdleList[self.currentFrame]
                 if self.facing == "down":
-                    self.currentSprite = self.downIdleList[self.currentFrame]
+                    self.sprite = self.downIdleList[self.currentFrame]
                 if self.facing == "up":        
-                    self.currentSprite = self.upIdleList[self.currentFrame]
+                    self.sprite = self.upIdleList[self.currentFrame]
         else:
             if currentTime - self.animLastUpdated > self.moveAnimCd:
                 self.animLastUpdated = currentTime
                 self.currentFrame = (self.currentFrame + 1) % len(self.downList)
                 if self.state == "left":
-                    self.currentSprite = pygame.transform.flip(self.rightList[self.currentFrame], True, False)
+                    self.sprite = pygame.transform.flip(self.rightList[self.currentFrame], True, False)
                 if self.state == "right":
-                    self.currentSprite = self.rightList[self.currentFrame]
+                    self.sprite = self.rightList[self.currentFrame]
                 if self.state == "down":
-                    self.currentSprite = self.downList[self.currentFrame]
+                    self.sprite = self.downList[self.currentFrame]
                 if self.state == "up":
-                    self.currentSprite = self.upList[self.currentFrame]
+                    self.sprite = self.upList[self.currentFrame]
 
     def update(self):
         self.movement()
@@ -171,6 +175,6 @@ class player:
         self.regeneration()
         
     def draw(self):    
-        pygame.draw.rect(self.game.window, colour["blue"], self.rect)
-        self.spriteRect = pygame.Rect(self.rect.x - (0.075 * self.width), self.rect.y - (0.075 * self.height), self.width, self.height)
-        self.game.window.blit(pygame.transform.scale(self.currentSprite, (self.width, self.height)), self.rect)
+        #pygame.draw.rect(self.game.window, colour["blue"], self.spriteRect)
+        #pygame.draw.rect(self.game.window, colour["red"], self.rect)
+        self.game.window.blit(pygame.transform.scale(self.sprite, (self.spriteWidth, self.spriteHeight)), self.spriteRect)

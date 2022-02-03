@@ -31,10 +31,10 @@ opSpell = {"type" : "straight",
            "dmg" : 1000,
            "numShots" : 10,
            "limit" : 1000000,
-           "spd" : 15,
+           "spd" : 25,
            "size" : 15,
            "mpCost" : 0,
-           "cooldown" : 5}
+           "cooldown" : 1}
 
 colour = {"white" : (255, 255, 255),
          "black" : (0, 0, 0),
@@ -50,12 +50,12 @@ colour = {"white" : (255, 255, 255),
          "orange" : (255, 102, 0),
          "purple" : (102, 0, 102)} 
 
-baseMap = ["BBBBBBBBBBBBBBBB",
+baseMap = ["BBBBBBBFFBBBBBBB",
            "BFFFFFFFFFFFFFFB",
            "BFFFFFFFFFFFFFFB",
+           "FFFFFFFFFFFFFFFF",  
+           "FFFFFFFFFFFFFFFF",
+           "FFFFFFFFFFFFFFFF",
            "BFFFFFFFFFFFFFFB",  
            "BFFFFFFFFFFFFFFB",
-           "BFFFFFFFFFFFFFFB",
-           "BFFFFFFFFFFFFFFB",  
-           "BFFFFFFFFFFFFFFB",
-           "BBBBBBBBBBBBBBBB"]
+           "BBBBBBBFFBBBBBBB"]
