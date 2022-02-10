@@ -2,30 +2,7 @@ import pygame
 from constants import *
 from framework import *
 
-class UI:
-    def __init__(self, game):
-        self.game = game
-
-    def mainMenuUpdate(self):
-        return
-
-    def mainMenuDraw(self):
-        button(self.game, "BACKTO1982.ttf", 32, "test", self.game.rect.center[0], self.game.rect.center[1])
-        return
-
-    def pauseMenuUpdate(self):
-        return
-
-    def pauseMenuDraw(self):
-        return
-
-    def settingsUpdate(self):
-        return
-
-    def settingsDraw(self):
-        return
-
-class gameUI:
+class ui:
     def __init__(self, game):
         self.game = game
 
@@ -44,9 +21,9 @@ class gameUI:
         self.itemBoxesHeight = 100
 
     def barUpdate(self):
-        self.hpWidth = (100 * (self.game.playerObj.hp / self.game.playerObj.maxHp)) * self.hpSize
+        self.hpWidth = (100 * (self.game.Player.hp / self.game.Player.maxHp)) * self.hpSize
         self.hpBackWidth = 100 * self.hpSize
-        self.mpWidth =  (100 * (self.game.playerObj.mp / self.game.playerObj.maxMp)) * self.mpSize
+        self.mpWidth =  (100 * (self.game.Player.mp / self.game.Player.maxMp)) * self.mpSize
         self.mpBackWidth =  100 * self.mpSize
 
         self.hpRect = pygame.Rect(self.hpX, self.hpY, self.hpWidth, self.hpHeight)

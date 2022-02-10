@@ -1,7 +1,7 @@
 import pygame
 import math
-import numpy
-from terrain import *
+from constants import *
+from framework import *
 
 class player:
     def __init__(self, game, stats):
@@ -27,6 +27,9 @@ class player:
         self.spriteHeight = self.game.tileHeight
         self.spriteRect = pygame.Rect(self.rect.x, self.rect.y, self.spriteWidth, self.spriteHeight)
 
+        self.activeItems = []
+        self.passiveItems = []
+
         self.spritesheet = spritesheet(self.game.wizardSheet)
         self.moveAnimCd = 150
         self.idleAnimCd = 300
@@ -35,6 +38,7 @@ class player:
         self.regenLastUpdated = 0
         self.facing = "down"
 
+        #Loading sprites rather then using spritesheet module to keep black outlines
         self.rightIdleList = [pygame.image.load('Assets/Player Frames/Wizard05.png'),
                               pygame.image.load('Assets/Player Frames/Wizard06.png')]
 
@@ -86,6 +90,7 @@ class player:
             self.state = "up"
             self.facing = "up"
 
+        #Normalizes Change
         if self.change.x == self.vel and self.change.y == self.vel:
             self.change.x = self.diagVel
             self.change.y = self.diagVel
@@ -119,21 +124,22 @@ class player:
             self.change.y = 0
 
     def blockCollision(self):
-        if self.axis == "x":
-            for block in self.game.roomObj.blocks:
-                if pygame.Rect.colliderect(self.rect, block.rect):
-                        if self.change.x < 0:
-                            self.rect.left = block.rect.right
-                        if self.change.x > 0:
-                            self.rect.right = block.rect.left
+        match self.axis:
+            case "x":
+                for block in self.game.Room.blocks:
+                    if pygame.Rect.colliderect(self.rect, block.rect):
+                            if self.change.x < 0:
+                                self.rect.left = block.rect.right
+                            if self.change.x > 0:
+                                self.rect.right = block.rect.left
 
-        if self.axis == "y":
-            for block in self.game.roomObj.blocks:
-                if pygame.Rect.colliderect(self.rect, block.rect):
-                        if self.change.y > 0:
-                            self.rect.bottom = block.rect.top
-                        if self.change.y < 0:
-                            self.rect.top = block.rect.bottom
+            case "y":
+                for block in self.game.Room.blocks:
+                    if pygame.Rect.colliderect(self.rect, block.rect):
+                            if self.change.y > 0:
+                                self.rect.bottom = block.rect.top
+                            if self.change.y < 0:
+                                self.rect.top = block.rect.bottom
 
     def regeneration(self):
         currentTime = pygame.time.get_ticks()
@@ -148,26 +154,28 @@ class player:
             if currentTime - self.animLastUpdated > self.idleAnimCd:
                 self.animLastUpdated = currentTime
                 self.currentFrame = (self.currentFrame + 1) % len(self.downIdleList)
-                if self.facing == "left":
-                    self.sprite = pygame.transform.flip(self.rightIdleList[self.currentFrame], True, False)
-                if self.facing == "right":
-                    self.sprite = self.rightIdleList[self.currentFrame]
-                if self.facing == "down":
-                    self.sprite = self.downIdleList[self.currentFrame]
-                if self.facing == "up":        
-                    self.sprite = self.upIdleList[self.currentFrame]
+                match self.facing:
+                    case "left":
+                        self.sprite = pygame.transform.flip(self.rightIdleList[self.currentFrame], True, False)
+                    case "right":
+                        self.sprite = self.rightIdleList[self.currentFrame]
+                    case "down":
+                        self.sprite = self.downIdleList[self.currentFrame]
+                    case "up":        
+                        self.sprite = self.upIdleList[self.currentFrame]
         else:
             if currentTime - self.animLastUpdated > self.moveAnimCd:
                 self.animLastUpdated = currentTime
                 self.currentFrame = (self.currentFrame + 1) % len(self.downList)
-                if self.state == "left":
-                    self.sprite = pygame.transform.flip(self.rightList[self.currentFrame], True, False)
-                if self.state == "right":
-                    self.sprite = self.rightList[self.currentFrame]
-                if self.state == "down":
-                    self.sprite = self.downList[self.currentFrame]
-                if self.state == "up":
-                    self.sprite = self.upList[self.currentFrame]
+                match self.state:
+                    case "left":
+                        self.sprite = pygame.transform.flip(self.rightList[self.currentFrame], True, False)
+                    case "right":
+                        self.sprite = self.rightList[self.currentFrame]
+                    case "down":
+                        self.sprite = self.downList[self.currentFrame]
+                    case "up":
+                        self.sprite = self.upList[self.currentFrame]
 
     def update(self):
         self.movement()
@@ -175,6 +183,4 @@ class player:
         self.regeneration()
         
     def draw(self):    
-        #pygame.draw.rect(self.game.window, colour["blue"], self.spriteRect)
-        #pygame.draw.rect(self.game.window, colour["red"], self.rect)
         self.game.window.blit(pygame.transform.scale(self.sprite, (self.spriteWidth, self.spriteHeight)), self.spriteRect)

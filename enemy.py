@@ -1,8 +1,8 @@
 import pygame
-from constants import*
-import numpy
-import random
 import math
+import random
+from constants import *
+from framework import *
 
 class enemy:
     def __init__(self, game, x, y):
@@ -18,10 +18,7 @@ class enemy:
         self.spriteHeight = self.game.tileHeight
         self.spriteRect = pygame.Rect(self.rect.x, self.rect.y, self.spriteWidth, self.spriteHeight)
 
-    def draw(self):
-        self.game.window.blit(self.sprite, self.rect)
-
-class chaser(enemy):
+class turret(enemy):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
         self.maxHp = 100
@@ -34,23 +31,17 @@ class chaser(enemy):
         self.bulletSpd = 5
         self.projList = []
 
+        self.sprite =  pygame.image.load("Assets/turret.png")
+
         self.atk1Cooldown = 750
         self.atk1LastUpdated = 0
-
-    def movement(self):
-        playerPos = pygame.Vector2(self.game.playerObj.rect.center)
-        chaserPos = pygame.Vector2(self.rect.center)
-        self.towards = (chaserPos - playerPos).normalize() / 4
-        self.x -= self.towards[0]
-        self.y -= self.towards[1]
-        self.spriteRect.center = self.rect.center
 
     def attack1(self):
         currentTime = pygame.time.get_ticks()
         if currentTime - self.atk1LastUpdated > self.atk1Cooldown:
             self.atk1LastUpdated = currentTime
-            playerX = self.game.playerObj.rect.center[0]
-            playerY = self.game.playerObj.rect.center[1]
+            playerX = self.game.Player.rect.center[0]
+            playerY = self.game.Player.rect.center[1]
             x = self.rect.center[0]
             y = self.rect.center[1]
             distanceX = playerX - x
@@ -62,24 +53,25 @@ class chaser(enemy):
 
     def moveBullet(self):
         for index, bullet in enumerate(self.projList):
-            for block in self.game.roomObj.blocks:
+            for block in self.game.Room.blocks:
                 collide = pygame.Rect.collidepoint(block.rect, (bullet[0], bullet[1]))
-                if collide == True:
+                match collide:
+                    case True:
+                        self.projList.pop(index)
+            match bullet:
+                case bullet if bullet[0] >= self.game.width or bullet[0] <= 0:
                     self.projList.pop(index)
-            if bullet[0] >= self.game.width or bullet[0] <= 0:
-                self.projList.pop(index)
-            if bullet[1] >= self.game.height or bullet[1] <= 0:
-                self.projList.pop(index)
+                case bullet if bullet[1] >= self.game.height or bullet[1] <= 0:
+                    self.projList.pop(index)
             bullet[0] += bullet[2]
             bullet[1] += bullet[3]
 
     def update(self):
-        self.movement()
+        self.attack1()
         self.moveBullet()
-        self.attack()
 
     def draw(self):
-        pygame.draw.rect(self.game.window, colour["blue"], self.rect)
+        self.game.window.blit(pygame.transform.scale(self.sprite, (self.spriteWidth, self.spriteHeight)), self.rect)
         for bullet in self.projList:
             posX = int(bullet[0])
             posY = int(bullet[1])

@@ -1,6 +1,8 @@
 import pygame
 import random
 from terrain import *
+from constants import *
+from framework import *
 
 class room:
     def __init__(self, game):
@@ -18,12 +20,13 @@ class room:
     def draw(self, tilemap):
         for y, row in enumerate(tilemap): 
             for x, tile in enumerate(row):
-                if tile == "B":
-                    b = block(self.game, x, y)
-                    b.draw()
-                if tile == "F":
-                    f = floor(self.game, x, y)
-                    f.draw()
+                match tile:
+                    case "B":
+                        b = block(self.game, x, y)
+                        b.draw()
+                    case "F":
+                        f = floor(self.game, x, y)
+                        f.draw()
 
 class map(room):
     def __init__(self):
@@ -46,14 +49,15 @@ class map(room):
             directionDict = {"left":False, "right":False, "up":False, "down":False}
 
             directionRandom = random.randint(1,4)
-            if directionRandom == 1:
-                directionDict["left"] = True
-            if directionRandom == 2:
-                directionDict["right"] = True
-            if directionRandom == 3:
-                directionDict["up"] = True
-            if directionRandom == 4:
-                directionDict["down"] = True
+            match directionRandom:
+                case 1:
+                    directionDict["left"] = True
+                case 2:
+                    directionDict["right"] = True
+                case 3:
+                    directionDict["up"] = True
+                case 4:
+                    directionDict["down"] = True
 
             self.roomData[f"room{self.counter}"] = [directionDict]
             self.counter += 1
