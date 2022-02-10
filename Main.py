@@ -131,16 +131,20 @@ class game:
         pygame.display.update()
 
     def settingsUpdate(self):
-        if self.settingsSaveApplyButton.pressed:
-            self.prevState = "settings"
-            self.state = "pre game"
-        if self.settingsBackButton.pressed:
+        if self.settingsSaveApplyButton.pressed():
             if self.prevState == "pause":
                 self.prevState = "settings"
-                self.state == "pause"
+                self.state = "pause"
             if self.prevState == "main menu":
                 self.prevState = "settings"
-                self.state == "main menu"
+                self.state = "main menu"
+        if self.settingsBackButton.pressed():
+            if self.prevState == "pause":
+                self.prevState = "settings"
+                self.state = "pause"
+            if self.prevState == "main menu":
+                self.prevState = "settings"
+                self.state = "main menu"
 
     def settingsDraw(self):
         self.window.fill(colour["black"])

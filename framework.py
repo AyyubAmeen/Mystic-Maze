@@ -38,16 +38,17 @@ class button:
     def __init__(self, game, text, x, y):
         self.game = game
 
+        self.characters = text
         self.font = pygame.font.Font("Assets/prstart.ttf", 36)
-        self.text = self.font.render(text, True, colour["white"])
+        self.text = self.font.render(self.characters, True, colour["white"])
         self.rect = self.text.get_rect(center=(x, y))
 
     def draw(self):
-        #if self.rect.collidepoint(self.game.mousePos):
-        #    self.text = self.font.render(self.text, True, colour["cream"])
-        #else:
-        #    self.text = self.font.render(self.text, True, colour["white"])
-        #self.rect = self.text.get_rect(center=(x, y))
+        if self.rect.collidepoint(self.game.mousePos):
+            self.text = self.font.render(self.characters, True, colour["cream"])
+        else:
+            self.text = self.font.render(self.characters, True, colour["white"])
+
         self.game.window.blit(self.text, self.rect)
 
     def pressed(self):
