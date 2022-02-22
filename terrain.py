@@ -5,13 +5,13 @@ from framework import *
 class terrain:
     def __init__(self, game, x, y):
         self.game = game
-
-        self.x = x * self.game.tileWidth
-        self.y = y * self.game.tileHeight
-        self.width = self.game.tileWidth
-        self.height = self.game.tileHeight
-        self.spriteWidth = spriteSize
-        self.spriteHeight = spriteSize
+        
+        self.width = 80 * self.game.widthScale
+        self.height = 80 * self.game.heightScale
+        self.x = x * self.width
+        self.y = y * self.height
+        self.spriteWidth = 32
+        self.spriteHeight = 32
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.spritesheet = spritesheet(self.game.terrainSheet)
@@ -28,7 +28,6 @@ class floor(terrain):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
         self.sprite = self.spritesheet.getSprite(416, 96, self.spriteWidth, self.spriteHeight)
-
 
 class leftRoom(terrain):
     def __init__(self, game, x, y):

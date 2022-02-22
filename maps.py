@@ -7,7 +7,6 @@ from framework import *
 class room:
     def __init__(self, game):
         self.game = game
-        self.currentRoom = 0
 
     def newRoom(self, tilemap):
         self.blocks = []
@@ -28,26 +27,27 @@ class room:
                         f = floor(self.game, x, y)
                         f.draw()
 
-class map(room):
+class map:
     def __init__(self):
         self.width = 5
         self.height = 5
-        self.numFloors = 1
+        self.numFloors = random.randint(1,3)
         self.numRooms = 10
-        self.floorTileMap = []
+        self.roomTilemap = []
         self.roomData = {}
+        self.currentRoom = "0"
         
     def newMap(self):
-        self.floorList()
+        self.blankTilemap()
         self.counter = 1
         self.generate()
-        print(self.floorTileMap)
+        print(self.roomTilemap)
         
     def generate(self):
         if self.counter != self.numRooms:
             self.Room1 = self.Room2
-            directionDict = {"left":False, "right":False, "up":False, "down":False}
 
+            directionDict = {"left":False, "right":False, "up":False, "down":False}
             directionRandom = random.randint(1,4)
             match directionRandom:
                 case 1:
@@ -59,12 +59,15 @@ class map(room):
                 case 4:
                     directionDict["down"] = True
 
-            self.roomData[f"room{self.counter}"] = [directionDict]
+            numEnemyRandom = random.randint(1,10)
+
+
+            self.roomData[f"{self.counter}"] = [directionDict]
             self.counter += 1
             self.generate()
 
-    def lists(self):
-        self.floor1D = [0 for x in range(self.width)]
-        for i in range(self.floorHeight):
-            self.floorTileMap.append(self.floor1D)   
-        self.Room2 = self.floorTileMap
+    def blankTilemap(self):
+        self.room1D = [0 for x in range(self.width)]
+        for i in range(self.height):
+            self.roomTileMap.append(self.roomRow)   
+        self.Room2 = self.roomTileMap[0][0]

@@ -1,5 +1,3 @@
-spriteSize = 32
-
 playerStats = {"maxHp" : 100,
                "hp" : 100,
                "maxMp" : 100,
@@ -9,32 +7,53 @@ playerStats = {"maxHp" : 100,
                "def" : 1,
                "spd" : 1}
 
-straightSpell = {"type" : "straight",
-              "dmg" : 1,
+#Range Spells
+fireBolt = {"name" : "Fire Bolt",
+              "type" : "straight",
+              "dmg" : 15,
               "numShots" : 1,
-              "limit" : 10,
-              "spd" : 7.5,
-              "size" : 5,
-              "mpCost" : 10,
-              "cooldown" : 300}
+              "lifetime" : 10,
+              "spd" : 10,
+              "size" : 25,
+              "mpCost" : 5,
+              "cooldown" : 0.2}
 
-shotgunSpell = {"type" : "straight",
-              "dmg" : 1,
+fireSpray = {"name" : "Fire Spray",
+              "type" : "shotgun",
+              "dmg" : 10,
               "numShots" : 5,
-              "limit" : 10,
-              "spd" : 7.5,
-              "size" : 5,
-              "mpCost" : 10,
-              "cooldown" : 300}
+              "lifetime" : 10,
+              "spd" : 10,
+              "size" : 25,
+              "mpCost" : 20,
+              "cooldown" : 0.5}
 
-opSpell = {"type" : "straight",
+dragonsBreath = {"name" : "Dragon's Breath",
+           "type" : "straight",
            "dmg" : 1000,
            "numShots" : 10,
-           "limit" : 1000000,
+           "lifetime" : 1,
            "spd" : 25,
-           "size" : 15,
-           "mpCost" : 0,
-           "cooldown" : 1}
+           "size" : 60,
+           "mpCost" : 0.3,
+           "cooldown" : 0}
+
+#Melee Spells
+fireFloor = {"name" : "Fire Floor",
+           "type" : "rectangle",
+           "dmg" : 10,
+           "lifetime" : 1,
+           "distance" : 0,
+           "size" : [100,100],
+           "cooldown" : 1.5}
+
+firePool = {"name" : "Fire Pool",
+           "type" : "circle",
+           "dmg" : 2,
+           "lifetime" : 5,
+           "distance" : 0,
+           "size" : 100,
+           "cooldown" : 5}
 
 colour = {"white" : (255, 255, 255),
          "black" : (0, 0, 0),
@@ -50,12 +69,12 @@ colour = {"white" : (255, 255, 255),
          "orange" : (255, 102, 0),
          "purple" : (102, 0, 102)} 
 
-baseMap = ["BBBBBBBFFBBBBBBB",
+baseMap = ["BBBBBBBBBBBBBBBB",
            "BFFFFFFFFFFFFFFB",
            "BFFFFFFFFFFFFFFB",
-           "FFFFFFFFFFFFFFFF",  
-           "FFFFFFFFFFFFFFFF",
-           "FFFFFFFFFFFFFFFF",
            "BFFFFFFFFFFFFFFB",  
            "BFFFFFFFFFFFFFFB",
-           "BBBBBBBFFBBBBBBB"]
+           "BFFFFFFFFFFFFFFB",
+           "BFFFFFFFFFFFFFFB",  
+           "BFFFFFFFFFFFFFFB",
+           "BBBBBBBBBBBBBBBB"]

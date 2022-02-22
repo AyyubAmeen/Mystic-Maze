@@ -1,5 +1,6 @@
 import pygame
 import math
+from item import *
 from constants import *
 from framework import *
 
@@ -18,40 +19,43 @@ class player:
         self.baseSpd = 5
         self.change = pygame.Vector2()
 
-        self.width = self.game.npcWidth
-        self.height = self.game.npcHeight
+        self.width = 48 * self.game.widthScale
+        self.height = 48 * self.game.heightScale
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.center = self.game.rect.center
 
-        self.spriteWidth = self.game.tileWidth
-        self.spriteHeight = self.game.tileHeight
+        self.spriteWidth = 80 * self.game.widthScale
+        self.spriteHeight = 80 * self.game.heightScale
         self.spriteRect = pygame.Rect(self.rect.x, self.rect.y, self.spriteWidth, self.spriteHeight)
 
-        self.activeItems = []
+        self.activeItems = [rangeSpell(self.game, fireBolt), rangeSpell(self.game, fireSpray), 0, 0, 0]
+        self.currentItem = 0
         self.passiveItems = []
 
-        self.spritesheet = spritesheet(self.game.wizardSheet)
         self.moveAnimCd = 150
         self.idleAnimCd = 300
-        self.currentFrame = 0
         self.animLastUpdated = 0
         self.regenLastUpdated = 0
+
+        self.spritesheet = spritesheet(self.game.wizardSheet)
+        self.currentFrame = 0
+        self.state = "idle"
         self.facing = "down"
 
         #Loading sprites rather then using spritesheet module to keep black outlines
-        self.rightIdleList = [pygame.image.load('Assets/Player Frames/Wizard05.png'),
-                              pygame.image.load('Assets/Player Frames/Wizard06.png')]
+        self.rightIdleList = [pygame.image.load("Assets/Player Frames/Wizard05.png"),
+                              pygame.image.load("Assets/Player Frames/Wizard06.png")]
 
-        self.downIdleList = [pygame.image.load('Assets/Player Frames/Wizard00.png'),
-                             pygame.image.load('Assets/Player Frames/Wizard01.png')]
+        self.downIdleList = [pygame.image.load("Assets/Player Frames/Wizard00.png"),
+                             pygame.image.load("Assets/Player Frames/Wizard01.png")]
 
-        self.upIdleList = [pygame.image.load('Assets/Player Frames/Wizard10.png'),
-                           pygame.image.load('Assets/Player Frames/Wizard11.png')]
+        self.upIdleList = [pygame.image.load("Assets/Player Frames/Wizard10.png"),
+                           pygame.image.load("Assets/Player Frames/Wizard11.png")]
 
-        self.rightList = [pygame.image.load('Assets/Player Frames/Wizard07.png'),
-                          pygame.image.load('Assets/Player Frames/Wizard08.png'),
-                          pygame.image.load('Assets/Player Frames/Wizard09.png'),
-                          pygame.image.load('Assets/Player Frames/Wizard08.png')]
+        self.rightList = [pygame.image.load("Assets/Player Frames/Wizard07.png"),
+                          pygame.image.load("Assets/Player Frames/Wizard08.png"),
+                          pygame.image.load("Assets/Player Frames/Wizard09.png"),
+                          pygame.image.load("Assets/Player Frames/Wizard08.png")]
 
         self.downList = [pygame.image.load('Assets/Player Frames/Wizard02.png'),
                          pygame.image.load('Assets/Player Frames/Wizard03.png'),
@@ -105,9 +109,11 @@ class player:
             self.change.y = -self.diagVel
 
         self.windowCollision()
+        self.change.x = self.change.x * self.game.widthScale
         self.rect.x += self.change.x
         self.axis = "x"
         self.blockCollision()
+        self.change.y = self.change.y * self.game.heightScale
         self.rect.y += self.change.y
         self.axis = "y"
         self.blockCollision()
@@ -142,17 +148,33 @@ class player:
                                 self.rect.top = block.rect.bottom
 
     def regeneration(self):
-        currentTime = pygame.time.get_ticks()
-        if currentTime - self.regenLastUpdated > 50:
-            self.regenLastUpdated = currentTime
-            if self.mp != self.maxMp:
+        if self.game.currentTime  - self.regenLastUpdated > 50:
+            self.regenLastUpdated = self.game.currentTime 
+            if self.mp < self.maxMp:
                 self.mp += self.mpRegen
+            if self.mp > self.maxMp:
+                self.mp = self.maxMp
+
+    def takeDmg(self, dmg):
+        return
+        #self.hp -=
+
+    def chooseItem(self):
+        if self.game.keysPressed[pygame.K_1]:
+            self.currentItem = 0
+        if self.game.keysPressed[pygame.K_2]:
+            self.currentItem = 1
+        if self.game.keysPressed[pygame.K_3]:
+            self.currentItem = 2
+        if self.game.keysPressed[pygame.K_4]:
+            self.currentItem = 3
+        if self.game.keysPressed[pygame.K_5]:
+            self.currentItem = 4
 
     def animation(self): 
-        currentTime = pygame.time.get_ticks()      
         if self.state == "idle":
-            if currentTime - self.animLastUpdated > self.idleAnimCd:
-                self.animLastUpdated = currentTime
+            if self.game.currentTime  - self.animLastUpdated > self.idleAnimCd:
+                self.animLastUpdated = self.game.currentTime 
                 self.currentFrame = (self.currentFrame + 1) % len(self.downIdleList)
                 match self.facing:
                     case "left":
@@ -164,8 +186,8 @@ class player:
                     case "up":        
                         self.sprite = self.upIdleList[self.currentFrame]
         else:
-            if currentTime - self.animLastUpdated > self.moveAnimCd:
-                self.animLastUpdated = currentTime
+            if self.game.currentTime  - self.animLastUpdated > self.moveAnimCd:
+                self.animLastUpdated = self.game.currentTime 
                 self.currentFrame = (self.currentFrame + 1) % len(self.downList)
                 match self.state:
                     case "left":
@@ -181,6 +203,17 @@ class player:
         self.movement()
         self.animation() 
         self.regeneration()
+        self.chooseItem()
+        for item in self.activeItems:
+            if item != 0:
+                item.update()
+        if self.activeItems[self.currentItem] != 0:
+            self.activeItems[self.currentItem].spawn()
+        if self.hp < 1:
+            self.game.state = "game over"
         
     def draw(self):    
+        for item in self.activeItems:
+            if item != 0:
+                item.draw()
         self.game.window.blit(pygame.transform.scale(self.sprite, (self.spriteWidth, self.spriteHeight)), self.spriteRect)

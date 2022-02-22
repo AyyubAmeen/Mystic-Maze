@@ -12,42 +12,64 @@ class spritesheet:
         pygame.transform.scale(sprite, (width, height))
         return sprite
 
+class save:
+    def __init__(self, game):
+        self.game = game
+    
+    def saveMap(self):
+        return
+
+    def savePlayer(self):
+        with open("player.txt","r") as file:
+            file.write(json.dump())
+
 class load:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
+    
+    def loadMap(self):
+        return
+
+    def loadPlayer(self):
         return
 
 class scale:
     def __init__(self, game):
         self.game = game
-        self.ratio = [16, 9]
         self.baseRes = [1280, 720]
-
-    def tileSize(self):
-        self.tileWidth = self.game.width / self.ratio[0]
-        self.tileHeight = self.game.height / self.ratio[1]
-
-    def npcSize(self):
-        self.npcWidth = (self.game.width / self.ratio[0]) * 0.6
-        self.npcHeight = (self.game.height / self.ratio[1]) * 0.6
-
-    def scale(self):
         self.widthScale = self.game.width / self.baseRes[0]
         self.heightScale = self.game.height / self.baseRes[1]
 
 class button:
-    def __init__(self, game, text, x, y):
+    def __init__(self, game, text, size, x, y, center):
         self.game = game
 
+        self.x = x
+        self.y = y
         self.characters = text
-        self.font = pygame.font.Font("Assets/prstart.ttf", 36)
+        self.centered = center
+        self.font = pygame.font.Font("Assets/prstart.ttf", int(size * self.game.widthScale))
         self.text = self.font.render(self.characters, True, colour["white"])
-        self.rect = self.text.get_rect(center=(x, y))
+
+        if self.centered:
+            self.rect = self.text.get_rect(center=(self.x, self.y))
+        else:
+            self.rect = self.text.get_rect()
+            self.rect.x = self.x
+            self.rect.y = self.y
 
     def draw(self):
         if self.rect.collidepoint(self.game.mousePos):
-            self.text = self.font.render(self.characters, True, colour["cream"])
+            self.text = self.font.render(f"<{self.characters}>", True, colour["cream"])
         else:
             self.text = self.font.render(self.characters, True, colour["white"])
+
+        if self.centered:
+            self.rect = self.text.get_rect(center=(self.x, self.y))
+        else:
+            self.rect = self.text.get_rect()
+            self.rect.x = self.x
+            self.rect.y = self.y
 
         self.game.window.blit(self.text, self.rect)
 
@@ -59,19 +81,33 @@ class button:
         return False
 
 class text:
-    def __init__(self, game, text, x, y):
+    def __init__(self, game, text, color, size, x, y, center):
         self.game = game
 
-        self.font = pygame.font.Font("Assets/prstart.ttf", 24) 
-        self.text = self.font.render(text, True, colour["white"])
-        self.rect = self.text.get_rect(center=(x, y))
+        self.font = pygame.font.Font("Assets/prstart.ttf", int(size * self.game.widthScale)) 
+        self.text = self.font.render(text, True, colour[color])
+
+        if center:
+            self.rect = self.text.get_rect(center=(x, y))
+        else:
+            self.rect = self.text.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+
         self.game.window.blit(self.text, self.rect)
 
 class title:
-    def __init__(self, game, text, x, y):
+    def __init__(self, game, text, color, size, x, y, center):
         self.game = game
 
-        self.font = pygame.font.Font("Assets/prstartk.ttf", 48) 
-        self.text = self.font.render(text, True, colour["white"])
-        self.rect = self.text.get_rect(center=(x, y))
+        self.font = pygame.font.Font("Assets/prstartk.ttf", int(size * self.game.widthScale)) 
+        self.text = self.font.render(text, True, colour[color])
+
+        if center:
+            self.rect = self.text.get_rect(center=(x, y))
+        else:
+            self.rect = self.text.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+
         self.game.window.blit(self.text, self.rect)
