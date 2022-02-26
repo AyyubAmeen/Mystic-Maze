@@ -8,6 +8,15 @@ class passives:
     def __init__(self, game):
         self.game = game
 
+    def hpUp(self):
+        return
+
+    def mpUp(self):
+        return
+
+    def mpRegenUp(self):
+        return
+
     def attackUp(self):
         return
 
@@ -16,7 +25,6 @@ class passives:
 
     def defenseUp(self):
         return
-
 
 class rangeSpell:
     def __init__(self, game, stats):

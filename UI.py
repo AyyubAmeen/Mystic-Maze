@@ -1,7 +1,7 @@
 import pygame
+from item import *
 from constants import *
-from framework import *
-from item import * 
+from framework import * 
 
 class ui:
     def __init__(self, game):

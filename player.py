@@ -8,14 +8,16 @@ class player:
     def __init__(self, game, stats):
         self.game = game
 
-        self.maxHp = stats["maxHp"]
-        self.hp = stats["hp"]
-        self.maxMp = stats["maxMp"]
-        self.mp = stats["mp"]
-        self.mpRegen = stats["mpRegen"]
-        self.atk = stats["atk"]
-        self.defe = stats["def"]
-        self.spd = stats["spd"]
+        self.baseStats = stats
+
+        self.maxHp = self.baseStats["maxHp"]
+        self.hp = self.baseStats["hp"]
+        self.maxMp = self.baseStats["maxMp"]
+        self.mp = self.baseStats["mp"]
+        self.mpRegen = self.baseStats["mpRegen"]
+        self.atk = self.baseStats["atk"]
+        self.defe = self.baseStats["def"]
+        self.spd = self.baseStats["spd"]
         self.baseSpd = 5
         self.change = pygame.Vector2()
 
@@ -28,9 +30,24 @@ class player:
         self.spriteHeight = 80 * self.game.heightScale
         self.spriteRect = pygame.Rect(self.rect.x, self.rect.y, self.spriteWidth, self.spriteHeight)
 
-        self.activeItems = [rangeSpell(self.game, fireBolt), rangeSpell(self.game, fireSpray), 0, 0, 0]
+        self.activeItems = []
+        self.passiveItems = self.baseStats["passiveItems"]
         self.currentItem = 0
-        self.passiveItems = []
+
+        for i in range(len(self.baseStats["activeItems"])):
+            if self.baseStats["activeItems"][i] != 0:
+                if self.baseStats["activeItems"][i][0] == "r":
+                    for item in rangeWeapons:
+                        if item["name"] == self.baseStats["activeItems"][i][1:]:
+                            self.activeItems.append(rangeSpell(self.game, item))
+                            break
+                if self.baseStats["activeItems"][i][0] == "m":
+                    for item in meleeWeapons:
+                        if item["name"] == self.baseStats["activeItems"][i][1:]:
+                            self.activeItems.append(meleeSpell(self.game, item))
+                            break
+            else:
+                self.activeItems.append(0)
 
         self.moveAnimCd = 150
         self.idleAnimCd = 300
@@ -42,7 +59,6 @@ class player:
         self.state = "idle"
         self.facing = "down"
 
-        #Loading sprites rather then using spritesheet module to keep black outlines
         self.rightIdleList = [pygame.image.load("Assets/Player Frames/Wizard05.png"),
                               pygame.image.load("Assets/Player Frames/Wizard06.png")]
 
@@ -94,7 +110,6 @@ class player:
             self.state = "up"
             self.facing = "up"
 
-        #Normalizes Change
         if self.change.x == self.vel and self.change.y == self.vel:
             self.change.x = self.diagVel
             self.change.y = self.diagVel
@@ -134,18 +149,18 @@ class player:
             case "x":
                 for block in self.game.Room.blocks:
                     if pygame.Rect.colliderect(self.rect, block.rect):
-                            if self.change.x < 0:
-                                self.rect.left = block.rect.right
-                            if self.change.x > 0:
-                                self.rect.right = block.rect.left
+                        if self.change.x < 0:
+                            self.rect.left = block.rect.right
+                        if self.change.x > 0:
+                            self.rect.right = block.rect.left
 
             case "y":
                 for block in self.game.Room.blocks:
                     if pygame.Rect.colliderect(self.rect, block.rect):
-                            if self.change.y > 0:
-                                self.rect.bottom = block.rect.top
-                            if self.change.y < 0:
-                                self.rect.top = block.rect.bottom
+                        if self.change.y > 0:
+                            self.rect.bottom = block.rect.top
+                        if self.change.y < 0:
+                            self.rect.top = block.rect.bottom
 
     def regeneration(self):
         if self.game.currentTime  - self.regenLastUpdated > 50:

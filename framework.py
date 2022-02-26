@@ -15,23 +15,35 @@ class spritesheet:
 class save:
     def __init__(self, game):
         self.game = game
+        self.player
     
-    def saveMap(self):
-        return
+#    def saveMap(self):
+#        with open("map.txt","w") as file:
+#            file.write(json.dump(self.game.Map.))
 
-    def savePlayer(self):
-        with open("player.txt","r") as file:
-            file.write(json.dump())
+#    def savePlayer(self):
+#        with open("player.txt","w") as file:
+#            file.write(json.dump(self.game.Player.))
 
 class load:
     def __init__(self, game):
         self.game = game
     
-    def loadMap(self):
-        return
+#    def loadMap(self):
+#        try:
+#            with open("player.txt", "r") as f:
+#        except:
+#            return False
 
-    def loadPlayer(self):
-        return
+#    def loadPlayer(self):
+#        try:
+#            with open("player.txt", "r") as f:
+#                line = f.readline()
+#                items = json.load(line)
+#                playerStats["activeItems"] = 
+#                playerStats["passiveItems"] = 
+#        except:
+#            return False
 
 class scale:
     def __init__(self, game):
