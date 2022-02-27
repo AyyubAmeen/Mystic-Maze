@@ -18,7 +18,7 @@ class player:
         self.atk = self.baseStats["atk"]
         self.defe = self.baseStats["def"]
         self.spd = self.baseStats["spd"]
-        self.baseSpd = 5
+        self.baseSpd = 6.5
         self.change = pygame.Vector2()
 
         self.width = 48 * self.game.widthScale
@@ -147,7 +147,7 @@ class player:
     def blockCollision(self):
         match self.axis:
             case "x":
-                for block in self.game.Room.blocks:
+                for block in self.game.Map.roomData[self.game.Map.currentRoom].blockRects:
                     if pygame.Rect.colliderect(self.rect, block.rect):
                         if self.change.x < 0:
                             self.rect.left = block.rect.right
@@ -155,12 +155,49 @@ class player:
                             self.rect.right = block.rect.left
 
             case "y":
-                for block in self.game.Room.blocks:
+                for block in self.game.Map.roomData[self.game.Map.currentRoom].blockRects:
                     if pygame.Rect.colliderect(self.rect, block.rect):
                         if self.change.y > 0:
                             self.rect.bottom = block.rect.top
                         if self.change.y < 0:
                             self.rect.top = block.rect.bottom
+
+    def roomTransfer(self):
+        if (self.rect.x + self.change.x) <= 0:
+            room = self.game.Map.roomData[self.game.Map.currentRoom].position
+            newRoom = [room[0], room[1] - 1]
+            for i, roomObj in enumerate(self.game.Map.roomData):
+                if roomObj.position == newRoom:
+                    self.game.Map.currentRoom = i
+                    self.rect.x = self.game.width - self.rect.width 
+                    break
+
+        if (self.rect.x + self.width + self.change.x) >= (self.game.width):
+            room = self.game.Map.roomData[self.game.Map.currentRoom].position
+            newRoom = [room[0], room[1] + 1]
+            for i, roomObj in enumerate(self.game.Map.roomData):
+                if roomObj.position == newRoom:
+                    self.game.Map.currentRoom = i
+                    self.rect.x = 0 + self.rect.width
+                    break
+
+        if (self.rect.y + self.change.y) <= 0:
+            room = self.game.Map.roomData[self.game.Map.currentRoom].position
+            newRoom = [room[0] - 1, room[1]]
+            for i, roomObj in enumerate(self.game.Map.roomData):
+                if roomObj.position == newRoom:
+                    self.game.Map.currentRoom = i
+                    self.rect.y = self.game.height - self.rect.height
+                    break
+
+        if (self.rect.y + self.height + self.change.y) >= (self.game.height):
+            room = self.game.Map.roomData[self.game.Map.currentRoom].position
+            newRoom = [room[0] + 1, room[1]]
+            for i, roomObj in enumerate(self.game.Map.roomData):
+                if roomObj.position == newRoom:
+                    self.game.Map.currentRoom = i
+                    self.rect.y = 0 + self.rect.height
+                    break
 
     def regeneration(self):
         if self.game.currentTime  - self.regenLastUpdated > 50:
@@ -171,8 +208,7 @@ class player:
                 self.mp = self.maxMp
 
     def takeDmg(self, dmg):
-        return
-        #self.hp -=
+        self.hp += -dmg * 1 - self.defe / (100 + self.defe)
 
     def chooseItem(self):
         if self.game.keysPressed[pygame.K_1]:
@@ -219,6 +255,7 @@ class player:
         self.animation() 
         self.regeneration()
         self.chooseItem()
+        self.roomTransfer()
         for item in self.activeItems:
             if item != 0:
                 item.update()

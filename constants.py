@@ -7,7 +7,7 @@ playerStats = {
     "atk" : 1,
     "def" : 1,
     "spd" : 1,
-    "activeItems" : ["rFire Bolt", "rFire Spray", 0, 0, 0],
+    "activeItems" : ["rFire Bolt", "rFire Spray", "rDragon's Breath", "mFire Floor", "mFire Pool"],
     "passiveItems" : []}
 
 #Range Spells
@@ -85,15 +85,3 @@ colour = {
     "gold" : (204, 153, 0),
     "orange" : (255, 102, 0),
     "purple" : (102, 0, 102)} 
-
-baseMap = [
-    ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
-    ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-    ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-    ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-    ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-    ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-    ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],  
-    ["B","F","F","F","F","F","F","F","F","F","F","F","F","F","F","B"],
-    ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
-    ]

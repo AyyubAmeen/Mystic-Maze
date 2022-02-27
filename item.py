@@ -42,8 +42,6 @@ class rangeSpell:
         self.cooldown = stats["cooldown"] * 1000
         self.cdLastUpdated = 0
 
-        self.projList = []
-
     def straightSpawn(self):
         if self.game.mousePressed[0]:
             if self.game.Player.mp >= self.mpCost:
@@ -57,7 +55,7 @@ class rangeSpell:
                     angle = math.atan2(distanceY, distanceX)
                     velX = self.spd * math.cos(angle) * self.game.widthScale
                     velY = self.spd * math.sin(angle) * self.game.heightScale
-                    self.projList.append([rect, velX, velY, self.game.currentTime])
+                    self.game.Map.roomData[self.game.Map.currentRoom].projectiles.append([rect, velX, velY, self.game.currentTime, self.name])
 
     def spreadSpawn(self):
         if self.game.mousePressed[0]:
@@ -72,7 +70,7 @@ class rangeSpell:
                     angle = math.atan2(distanceY, distanceX)
                     velX = self.spd * math.cos(angle) * self.game.widthScale
                     velY = self.spd * math.sin(angle) * self.game.heightScale
-                    self.projList.append([rect, velX, velY, self.game.currentTime])
+                    self.game.Map.roomData[self.game.Map.currentRoom].projectiles.append([rect, velX, velY, self.game.currentTime, self.name])
 
     def shotgunSpawn(self):
         if self.game.mousePressed[0]:
@@ -91,7 +89,7 @@ class rangeSpell:
                         angle = math.atan2(distanceY, distanceX) + (math.pi * angleMod)
                         velX = (self.spd + random.randint(1,5)) * math.cos(angle) * self.game.widthScale 
                         velY = (self.spd + random.randint(1,5)) * math.sin(angle) * self.game.heightScale
-                        self.projList.append([rect, velX, velY, self.game.currentTime])
+                        self.game.Map.roomData[self.game.Map.currentRoom].projectiles.append([rect, velX, velY, self.game.currentTime, self.name])
 
     def spawn(self):
         match self.type:
@@ -103,38 +101,47 @@ class rangeSpell:
                 self.shotgunSpawn()
         
     def update(self):
-        for index, bullet in enumerate(self.projList):
-            for block in self.game.Room.blocks:
-                collide = pygame.Rect.colliderect(block.rect, bullet[0])
-                if collide:
-                    try:
-                        self.projList.pop(index)
-                    except:
-                        pass
+        for index, bullet in enumerate(self.game.Map.roomData[self.game.Map.currentRoom].projectiles):
+            if bullet[-1] == self.name:
+                for block in self.game.Map.roomData[self.game.Map.currentRoom].blockRects:
+                    collide = pygame.Rect.colliderect(block.rect, bullet[0])
+                    if collide:
+                        try:
+                            self.game.Map.roomData[self.game.Map.currentRoom].projectiles.pop(index)
+                        except:
+                            pass
                 if bullet[0].center[0] >= self.game.width or bullet[0].center[0] <= 0:
                     try:
-                        self.projList.pop(index)
+                        self.game.Map.roomData[self.game.Map.currentRoom].projectiles.pop(index)
                     except:
                         pass                
                 if bullet[0].center[1] >= self.game.height or bullet[0].center[1] <= 0:
                     try:
-                        self.projList.pop(index)
+                        self.game.Map.roomData[self.game.Map.currentRoom].projectiles.pop(index)
                     except:
                         pass
-            if self.game.currentTime - bullet[3] > self.lifetime:
-                try:
-                    self.projList.pop(index)
-                except:
-                    pass
-            bullet[0].x += bullet[1]
-            bullet[0].y += bullet[2]
+                if self.game.currentTime - bullet[3] > self.lifetime:
+                    try:
+                        self.game.Map.roomData[self.game.Map.currentRoom].projectiles.pop(index)
+                    except:
+                        pass
+                for enemy in self.game.Map.roomData[self.game.Map.currentRoom].enemies:
+                    if pygame.Rect.colliderect(bullet[0], enemy.rect):
+                        try:
+                            self.game.Map.roomData[self.game.Map.currentRoom].projectiles.pop(index)
+                            enemy.takeDmg(self.dmg)
+                        except:
+                            pass
+                bullet[0].x += bullet[1]
+                bullet[0].y += bullet[2]
 
     def draw(self):
-        for bullet in self.projList:
-            posX = int(bullet[0].center[0])
-            posY = int(bullet[0].center[1])
-            pygame.draw.circle(self.game.window, colour["orange"], (posX, posY), (0.5 * self.size))
-            pygame.draw.circle(self.game.window, colour["red"], (posX, posY), ((0.5 * self.size) * (3/5)))
+        for bullet in self.game.Map.roomData[self.game.Map.currentRoom].projectiles:
+            if bullet[-1] == self.name:
+                posX = int(bullet[0].center[0])
+                posY = int(bullet[0].center[1])
+                pygame.draw.circle(self.game.window, colour["orange"], (posX, posY), (0.5 * self.size))
+                pygame.draw.circle(self.game.window, colour["red"], (posX, posY), ((0.5 * self.size) * (3/5)))
 
 class meleeSpell:
     def __init__(self, game, stats):
@@ -142,7 +149,7 @@ class meleeSpell:
 
         self.name = stats["name"]
         self.type = stats["type"]
-        self.dmg = stats["dmg"] * self.game.Player.atk
+        self.dmg = stats["dmg"]
         self.distance = stats["distance"]
 
         if self.type == "rectangle":
@@ -153,8 +160,6 @@ class meleeSpell:
         self.lifetime = stats["lifetime"] * 1000
         self.cooldown = stats["cooldown"] * 1000
         self.cdLastUpdated = 0
-
-        self.meleeList = []
 
     def rectangleSpawn(self):
         if self.game.mousePressed[0]:
@@ -171,7 +176,7 @@ class meleeSpell:
                 rect.x += spawnX
                 rect.y += spawnY
                 secRect.center = rect.center
-                self.meleeList.append([self.game.currentTime, rect, secRect])
+                self.game.Map.roomData[self.game.Map.currentRoom].projectiles.append([self.game.currentTime, rect, secRect, self.name])
 
     def circleSpawn(self):
         if self.game.mousePressed[0]:
@@ -186,7 +191,7 @@ class meleeSpell:
                 spawnY = math.sin(angle) * (self.size)
                 rect.x += spawnX
                 rect.y += spawnY
-                self.meleeList.append([self.game.currentTime, rect])
+                self.game.Map.roomData[self.game.Map.currentRoom].projectiles.append([self.game.currentTime, rect, self.name])
 
     def spawn(self):
         match self.type:
@@ -196,23 +201,32 @@ class meleeSpell:
                 self.circleSpawn()
 
     def update(self):
-        for index, melee in enumerate(self.meleeList):
-            if self.game.currentTime - melee[0] > self.lifetime:
-                try:
-                    self.meleeList.pop(index)
-                except:
-                    pass
+        for index, melee in enumerate(self.game.Map.roomData[self.game.Map.currentRoom].projectiles):
+            if melee[-1] == self.name:
+                if self.game.currentTime - melee[0] > self.lifetime:
+                    try:
+                        self.meleeList.pop(index)
+                    except:
+                        pass
+                for enemy in self.game.Map.roomData[self.game.Map.currentRoom].enemies:
+                    if pygame.Rect.colliderect(melee[0], enemy.rect):
+                        try:
+                            self.game.Map.roomData[self.game.Map.currentRoom].projectiles.pop(index)
+                            enemy.takeDmg(self.dmg)
+                        except:
+                            pass
                 
     def draw(self):
-        for melee in self.meleeList:
-            if self.type == "rectangle":
-                pygame.draw.rect(self.game.window, colour["orange"], melee[1])
-                pygame.draw.rect(self.game.window, colour["red"], melee[2])
-            if self.type == "circle":
-                posX = int(melee[1].center[0])
-                posY = int(melee[1].center[1])
-                pygame.draw.circle(self.game.window, colour["orange"], (posX, posY), (0.5 * self.size))
-                pygame.draw.circle(self.game.window, colour["red"], (posX, posY), ((0.5 * self.size) * (4/5)))
+        for melee in self.game.Map.roomData[self.game.Map.currentRoom].projectiles:
+            if melee[-1] == self.name:
+                if self.type == "rectangle":
+                    pygame.draw.rect(self.game.window, colour["orange"], melee[1])
+                    pygame.draw.rect(self.game.window, colour["red"], melee[2])
+                if self.type == "circle":
+                    posX = int(melee[1].center[0])
+                    posY = int(melee[1].center[1])
+                    pygame.draw.circle(self.game.window, colour["orange"], (posX, posY), (0.5 * self.size))
+                    pygame.draw.circle(self.game.window, colour["red"], (posX, posY), ((0.5 * self.size) * (4/5)))
 
 class itemDrops:
     def __init__(self, game):

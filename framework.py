@@ -1,4 +1,5 @@
 import pygame
+import pickle
 import json
 from constants import *
 
@@ -15,35 +16,58 @@ class spritesheet:
 class save:
     def __init__(self, game):
         self.game = game
-        self.player
-    
-#    def saveMap(self):
-#        with open("map.txt","w") as file:
-#            file.write(json.dump(self.game.Map.))
 
-#    def savePlayer(self):
-#        with open("player.txt","w") as file:
-#            file.write(json.dump(self.game.Player.))
+    def save(self):
+        with open("map.txt","w") as f:
+            f.write(json.dumps(self.game.Map.roomTilemap))
+            f.write(json.dumps(self.game.Map.currentRoom))
+
+        with open("roomData.pkl", "wb") as f:
+            pickle.dump(self.game.Map.roomData, f)
+
+        with open("player.txt","w") as f:
+            f.write(json.dumps(self.game.Player.activeItems))
+            f.write(json.dumps(self.game.Player.passiveItems))
 
 class load:
     def __init__(self, game):
         self.game = game
     
-#    def loadMap(self):
-#        try:
-#            with open("player.txt", "r") as f:
-#        except:
-#            return False
+    def loadMap(self):
+        try:
+            with open("map.txt", "r") as f:
+                line = f.readline()
+                self.game.loadedRoomTilemap = json.load(line)
+                line = f.readline()
+                self.game.loadedCurrentRoom = json.load(line)
 
-#    def loadPlayer(self):
-#        try:
-#            with open("player.txt", "r") as f:
-#                line = f.readline()
-#                items = json.load(line)
-#                playerStats["activeItems"] = 
-#                playerStats["passiveItems"] = 
-#        except:
-#            return False
+            with open("roomData.pkl", "rb") as f:
+                self.game.loadedRoomData = pickle.load(f)
+            return True
+        except:
+            return False
+
+    def loadPlayer(self):
+        try:
+            with open("player.txt", "r") as f:
+                line = f.readline()
+                activeItems = json.load(line)
+                line = f.readline()
+                passiveItems = json.load(line)
+                self.game.loadedPlayerStats = {
+                    "maxHp" : 100,
+                    "hp" : 100,
+                    "maxMp" : 100,
+                    "mp" : 100,
+                    "mpRegen" : 0.5,
+                    "atk" : 1,
+                    "def" : 1,
+                    "spd" : 1,
+                    "activeItems" : activeItems,
+                    "passiveItems" : passiveItems} 
+            return True
+        except:
+            return False
 
 class scale:
     def __init__(self, game):

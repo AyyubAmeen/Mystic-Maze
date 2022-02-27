@@ -5,6 +5,9 @@ class menu:
     def __init__(self, game):
         self.game = game
 
+        self.tempResolution = 0
+
+    def initialize(self):
         #Main Menu
         self.mainPlayButton = button(self.game, "Play", 36, 0.5 * self.game.width, 0.4 * self.game.height, True)
         self.mainSettingsButton = button(self.game, "Settings", 36, 0.5 * self.game.width, 0.55 * self.game.height, True)
@@ -34,7 +37,7 @@ class menu:
         #Settings Menu
         self.settingsSaveApplyButton = button(self.game, "Save & Apply", 36, 0.3 * self.game.width, 0.9 * self.game.height, True)
         self.settingsBackButton = button(self.game, "Back", 36, 0.7 * self.game.width, 0.9 * self.game.height, True)
-        self.settingsResolution = button(self.game, f"{self.game.width} x {self.game.height}", 36, 0.6 * self.game.width, 0.2 * self.game.height, True)
+        self.settingsResolution = button(self.game, f"{self.game.resolution[self.tempResolution][0]} x {self.game.resolution[self.tempResolution][1]}", 36, 0.6 * self.game.width, 0.2 * self.game.height, True)
         self.settingsButtonList = [self.settingsSaveApplyButton, self.settingsBackButton, self.settingsResolution]
 
     def mainUpdate(self):
@@ -60,7 +63,7 @@ class menu:
             self.game.prevState = self.game.state
             self.game.state = "game"
         if self.preGameLoadGameButton.pressed():
-            self.game.newGame()
+            self.game.loadGame()
             self.game.prevState = self.game.state
             self.game.state = "game"
         if self.preGameBackButton.pressed():
@@ -117,12 +120,45 @@ class menu:
 
     def settingsUpdate(self):
         if self.settingsSaveApplyButton.pressed():
-            self.game.state = self.game.prevState
-            self.game.prevState = "settings"
-        if self.settingsBackButton.pressed():
+            self.game.currentResolution = self.tempResolution
+            self.game.prevResolution = self.game.currentResolution
+
+            self.game.width = self.game.resolution[self.game.currentResolution][0]
+            self.game.height = self.game.resolution[self.game.currentResolution][1]
+            self.game.rect = pygame.Rect(0, 0, self.game.width, self.game.height)
+
+            self.game.window = pygame.display.set_mode((self.game.width, self.game.height))
+            pygame.display.set_caption("Mystic Maze")
+
             self.game.state = self.game.prevState
             self.game.prevState = "settings"
 
+        if self.settingsBackButton.pressed():
+            self.game.width = self.game.resolution[self.game.prevResolution][0]
+            self.game.height = self.game.resolution[self.game.prevResolution][1]
+            self.game.rect = pygame.Rect(0, 0, self.game.width, self.game.height)
+
+            self.game.window = pygame.display.set_mode((self.game.width, self.game.height))
+            pygame.display.set_caption("Mystic Maze")
+
+            self.game.state = self.game.prevState
+            self.game.prevState = "settings"
+
+        if self.settingsResolution.pressed():
+            self.tempResolution = (self.tempResolution + 1) % len(self.game.resolution)
+
+            self.game.width = self.game.resolution[self.tempResolution][0]
+            self.game.height = self.game.resolution[self.tempResolution][1]
+            self.game.rect = pygame.Rect(0, 0, self.game.width, self.game.height)
+
+            self.game.window = pygame.display.set_mode((self.game.width, self.game.height))
+            pygame.display.set_caption("Mystic Maze")
+
+            self.initialize()
+            self.game.Scale = scale(self.game)
+            self.game.widthScale = self.game.Scale.widthScale
+            self.game.heightScale = self.game.Scale.heightScale
+    
     def settingsDraw(self):
         self.game.window.fill(colour["black"])
         text(self.game, "Resolution: ", "white", 36, 0.2 * self.game.width, 0.2 * self.game.height, True)
