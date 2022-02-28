@@ -130,6 +130,11 @@ class menu:
             self.game.window = pygame.display.set_mode((self.game.width, self.game.height))
             pygame.display.set_caption("Mystic Maze")
 
+            self.initialize()
+            self.game.Scale = scale(self.game)
+            self.game.widthScale = self.game.Scale.widthScale
+            self.game.heightScale = self.game.Scale.heightScale
+
             self.game.state = self.game.prevState
             self.game.prevState = "settings"
 
@@ -140,6 +145,11 @@ class menu:
 
             self.game.window = pygame.display.set_mode((self.game.width, self.game.height))
             pygame.display.set_caption("Mystic Maze")
+
+            self.initialize()
+            self.game.Scale = scale(self.game)
+            self.game.widthScale = self.game.Scale.widthScale
+            self.game.heightScale = self.game.Scale.heightScale
 
             self.game.state = self.game.prevState
             self.game.prevState = "settings"

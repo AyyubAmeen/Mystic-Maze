@@ -20,6 +20,7 @@ class save:
     def save(self):
         with open("map.txt","w") as f:
             f.write(json.dumps(self.game.Map.roomTilemap))
+            f.write("\n")
             f.write(json.dumps(self.game.Map.currentRoom))
 
         with open("roomData.pkl", "wb") as f:
@@ -27,6 +28,7 @@ class save:
 
         with open("player.txt","w") as f:
             f.write(json.dumps(self.game.Player.activeItems))
+            f.write("\n")
             f.write(json.dumps(self.game.Player.passiveItems))
 
 class load:

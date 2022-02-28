@@ -209,7 +209,7 @@ class meleeSpell:
                     except:
                         pass
                 for enemy in self.game.Map.roomData[self.game.Map.currentRoom].enemies:
-                    if pygame.Rect.colliderect(melee[0], enemy.rect):
+                    if pygame.Rect.colliderect(melee[1], enemy.rect):
                         try:
                             self.game.Map.roomData[self.game.Map.currentRoom].projectiles.pop(index)
                             enemy.takeDmg(self.dmg)
