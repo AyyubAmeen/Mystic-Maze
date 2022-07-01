@@ -10,7 +10,7 @@ class room:
         self.directions = {"left":False, "right":False, "up":False, "down":False}
         self.enemies = []
         self.items = []
-        self.projectiles = []
+        self.playerProj = []
         self.enemyProj = []
         self.tilemap = [
             ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
@@ -35,21 +35,23 @@ class maps:
     def __init__(self, game):
         self.game = game
 
-        self.width = 15
-        self.height = 15
+        self.width = 20
+        self.height = 20
         self.numFloors = random.randint(1,3)
-        self.numRooms = 10
+        self.numRooms = 15
         self.roomData = []
         self.roomTilemap = []
         self.floorList = []
+
         self.currentRoom = 0
+        self.currentFloor = 0
+        self.currentRoomObj = 0
         
     def newMap(self):
-        self.generateBlankRoomTilemap()
         self.generateRoomTilemap()
         self.setTilemap()
         self.setRectLists()
-        self.setEnemies()
+        #self.setEnemies()
         for y, row in enumerate(self.roomTilemap): 
             print(*self.roomTilemap[y])
 
@@ -72,6 +74,7 @@ class maps:
                         self.roomObj.directions["left"] = True
                         directionConfirmed = True
                         self.Room2 = [self.Room1[0], tempRoomIndex]
+
             if directionRandom == 2:
                 tempRoomIndex = self.Room1[1] + 1
                 if tempRoomIndex < len(self.roomTilemap[0]): 
@@ -79,6 +82,7 @@ class maps:
                         self.roomObj.directions["right"] = True
                         directionConfirmed = True
                         self.Room2 = [self.Room1[0], tempRoomIndex]
+
             if directionRandom == 3:
                 tempRoomIndex = self.Room1[0] - 1
                 if tempRoomIndex > 0: 
@@ -86,6 +90,7 @@ class maps:
                         self.roomObj.directions["up"] = True
                         directionConfirmed = True
                         self.Room2 = [tempRoomIndex, self.Room1[1]]
+
             if directionRandom == 4:
                 tempRoomIndex = self.Room1[0] + 1
                 if tempRoomIndex < len(self.roomTilemap): 
@@ -102,16 +107,19 @@ class maps:
                 value = self.roomTilemap[room[0]][tempRoomIndex]
                 if value != "x":  
                     roomObj.directions["left"] = True
+
             tempRoomIndex = room[1] + 1
             if tempRoomIndex < len(self.roomTilemap[0]): 
                 value = self.roomTilemap[room[0]][tempRoomIndex]
                 if value != "x":  
                     roomObj.directions["right"] = True
+
             tempRoomIndex = room[0] - 1
             if tempRoomIndex > 0: 
                 value = self.roomTilemap[tempRoomIndex][room[1]]
                 if value != "x":  
                     roomObj.directions["up"] = True
+                    
             tempRoomIndex = room[0] + 1
             if tempRoomIndex < len(self.roomTilemap): 
                 value = self.roomTilemap[tempRoomIndex][room[1]]
@@ -191,6 +199,7 @@ class maps:
         self.counter = 0
         self.Room2 = [int(self.height/2) - 1, int(self.width/2) - 1]
 
+        self.generateBlankRoomTilemap()
         self.generateRoomTilemapP1()
         self.generateRoomTilemapP2()
         self.setPosition()

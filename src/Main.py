@@ -107,25 +107,24 @@ class game:
             self.keysPressed = pygame.key.get_pressed()
             self.mousePressed = pygame.mouse.get_pressed()
             self.mousePos = pygame.mouse.get_pos()
-            match self.state: 
-                case "main menu":
-                    self.Menu.mainUpdate()
-                    self.Menu.mainDraw()
-                case "pre game":
-                    self.Menu.preGameUpdate()
-                    self.Menu.preGameDraw()
-                case "game over":
-                    self.Menu.gameOverUpdate()
-                    self.Menu.gameOverDraw()
-                case "settings":
-                    self.Menu.settingsUpdate()
-                    self.Menu.settingsDraw()
-                case "pause":
-                    self.Menu.pauseUpdate()
-                    self.Menu.pauseDraw()
-                case "game":
-                    self.update()
-                    self.draw()
+            if self.state == "main menu":
+                self.Menu.mainUpdate()
+                self.Menu.mainDraw()
+            if self.state == "pre game":
+                self.Menu.preGameUpdate()
+                self.Menu.preGameDraw()
+            if self.state == "game over":
+                self.Menu.gameOverUpdate()
+                self.Menu.gameOverDraw()
+            if self.state == "settings":
+                self.Menu.settingsUpdate()
+                self.Menu.settingsDraw()
+            if self.state == "pause":
+                self.Menu.pauseUpdate()
+                self.Menu.pauseDraw()
+            if self.state == "game":
+                self.update()
+                self.draw()
         #self.Save.save()
         pygame.quit()
         sys.exit()

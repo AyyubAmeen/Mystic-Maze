@@ -71,6 +71,12 @@ class load:
         except:
             return False
 
+#class cooldown:
+#    def __init__(self, lastUpdated, time):
+#        if self.game.currentTime - lastUpdated > 50:
+#            lastUpdated = self.game.currentTime 
+
+
 class scale:
     def __init__(self, game):
         self.game = game

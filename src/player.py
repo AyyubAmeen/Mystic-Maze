@@ -91,7 +91,8 @@ class player:
         self.change.x = 0
         self.change.y = 0
         self.vel = self.baseSpd * self.spd
-        self.diagVel = (1 / math.sqrt(1**2 + 1**2)) * self.vel
+        self.diagVel = 0
+        diag = lambda x, y : (1 / math.sqrt((x)**2 + (y)**2)) * self.vel
 
         if self.game.keysPressed[pygame.K_a]:      
             self.change.x = -self.vel
@@ -111,15 +112,19 @@ class player:
             self.facing = "up"
 
         if self.change.x == self.vel and self.change.y == self.vel:
+            self.diagVel = diag(1,1) 
             self.change.x = self.diagVel
             self.change.y = self.diagVel
         elif self.change.x == self.vel and self.change.y == -self.vel:
+            self.diagVel = diag(1,-1) 
             self.change.x = self.diagVel
             self.change.y = -self.diagVel
         elif self.change.x == -self.vel and self.change.y == self.vel:
+            self.diagVel = diag(-1,1) 
             self.change.x = -self.diagVel
             self.change.y = self.diagVel
         elif self.change.x == -self.vel and self.change.y == -self.vel:
+            self.diagVel = diag(-1,-1) 
             self.change.x = -self.diagVel
             self.change.y = -self.diagVel
 
@@ -200,7 +205,7 @@ class player:
                     break
 
     def regeneration(self):
-        if self.game.currentTime  - self.regenLastUpdated > 50:
+        if self.game.currentTime - self.regenLastUpdated > 50:
             self.regenLastUpdated = self.game.currentTime 
             if self.mp < self.maxMp:
                 self.mp += self.mpRegen
