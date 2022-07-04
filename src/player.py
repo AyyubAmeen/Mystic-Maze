@@ -59,29 +59,29 @@ class player:
         self.state = "idle"
         self.facing = "down"
 
-        self.rightIdleList = [pygame.image.load("Assets/Player Frames/Wizard05.png"),
-                              pygame.image.load("Assets/Player Frames/Wizard06.png")]
+        self.rightIdleList = [pygame.image.load("assets/images/Player Frames/Wizard05.png"),
+                              pygame.image.load("assets/images/Player Frames/Wizard06.png")]
 
-        self.downIdleList = [pygame.image.load("Assets/Player Frames/Wizard00.png"),
-                             pygame.image.load("Assets/Player Frames/Wizard01.png")]
+        self.downIdleList = [pygame.image.load("assets/images/Player Frames/Wizard00.png"),
+                             pygame.image.load("assets/images/Player Frames/Wizard01.png")]
 
-        self.upIdleList = [pygame.image.load("Assets/Player Frames/Wizard10.png"),
-                           pygame.image.load("Assets/Player Frames/Wizard11.png")]
+        self.upIdleList = [pygame.image.load("assets/images/Player Frames/Wizard10.png"),
+                           pygame.image.load("assets/images/Player Frames/Wizard11.png")]
 
-        self.rightList = [pygame.image.load("Assets/Player Frames/Wizard07.png"),
-                          pygame.image.load("Assets/Player Frames/Wizard08.png"),
-                          pygame.image.load("Assets/Player Frames/Wizard09.png"),
-                          pygame.image.load("Assets/Player Frames/Wizard08.png")]
+        self.rightList = [pygame.image.load("assets/images/Player Frames/Wizard07.png"),
+                          pygame.image.load("assets/images/Player Frames/Wizard08.png"),
+                          pygame.image.load("assets/images/Player Frames/Wizard09.png"),
+                          pygame.image.load("assets/images/Player Frames/Wizard08.png")]
 
-        self.downList = [pygame.image.load('Assets/Player Frames/Wizard02.png'),
-                         pygame.image.load('Assets/Player Frames/Wizard03.png'),
-                         pygame.image.load('Assets/Player Frames/Wizard04.png'),
-                         pygame.image.load('Assets/Player Frames/Wizard03.png')]
+        self.downList = [pygame.image.load('assets/images/Player Frames/Wizard02.png'),
+                         pygame.image.load('assets/images/Player Frames/Wizard03.png'),
+                         pygame.image.load('assets/images/Player Frames/Wizard04.png'),
+                         pygame.image.load('assets/images/Player Frames/Wizard03.png')]
 
-        self.upList = [pygame.image.load('Assets/Player Frames/Wizard12.png'),
-                       pygame.image.load('Assets/Player Frames/Wizard13.png'),
-                       pygame.image.load('Assets/Player Frames/Wizard14.png'),
-                       pygame.image.load('Assets/Player Frames/Wizard13.png')]
+        self.upList = [pygame.image.load('assets/images/Player Frames/Wizard12.png'),
+                       pygame.image.load('assets/images/Player Frames/Wizard13.png'),
+                       pygame.image.load('assets/images/Player Frames/Wizard14.png'),
+                       pygame.image.load('assets/images/Player Frames/Wizard13.png')]
 
         self.sprite = self.downIdleList[0] 
      

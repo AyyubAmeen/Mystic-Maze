@@ -29,10 +29,10 @@ class game:
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Mystic Maze")
 
-        self.terrainSheet = pygame.image.load("Assets/terrain.png")
-        self.wizardSheet = pygame.image.load("Assets/wizard.png")
-        self.rangeSpellSprite = pygame.image.load("Assets/fire.png")
-        self.meleeSpellSprite = pygame.image.load("Assets/firesword.png")
+        self.terrainSheet = pygame.image.load("assets/images/terrain.png")
+        self.wizardSheet = pygame.image.load("assets/images/wizard.png")
+        self.rangeSpellSprite = pygame.image.load("assets/images/fire.png")
+        self.meleeSpellSprite = pygame.image.load("assets/images/firesword.png")
 
         self.Scale = scale(self)
         self.widthScale = self.Scale.widthScale

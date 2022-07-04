@@ -92,7 +92,7 @@ class button:
         self.y = y
         self.characters = text
         self.centered = center
-        self.font = pygame.font.Font("Assets/prstart.ttf", int(size * self.game.widthScale))
+        self.font = pygame.font.Font("assets/fonts/prstart.ttf", int(size * self.game.widthScale))
         self.text = self.font.render(self.characters, True, colour["white"])
 
         if self.centered:
@@ -128,7 +128,7 @@ class text:
     def __init__(self, game, text, color, size, x, y, center):
         self.game = game
 
-        self.font = pygame.font.Font("Assets/prstart.ttf", int(size * self.game.widthScale)) 
+        self.font = pygame.font.Font("assets/fonts/prstart.ttf", int(size * self.game.widthScale)) 
         self.text = self.font.render(text, True, colour[color])
 
         if center:
@@ -144,7 +144,7 @@ class title:
     def __init__(self, game, text, color, size, x, y, center):
         self.game = game
 
-        self.font = pygame.font.Font("Assets/prstartk.ttf", int(size * self.game.widthScale)) 
+        self.font = pygame.font.Font("assets/fonts/prstartk.ttf", int(size * self.game.widthScale)) 
         self.text = self.font.render(text, True, colour[color])
 
         if center:
